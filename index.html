@@ -1,0 +1,5399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AssetGuard | IT Asset Management Assistant</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <script>
+    window.onerror = function(message, source, lineno, colno, error) {
+      const banner = document.createElement("div");
+      banner.style.position = "fixed";
+      banner.style.top = "0";
+      banner.style.left = "0";
+      banner.style.right = "0";
+      banner.style.background = "#ff4b4b";
+      banner.style.color = "white";
+      banner.style.padding = "16px";
+      banner.style.zIndex = "99999";
+      banner.style.fontWeight = "bold";
+      banner.style.fontSize = "14px";
+      banner.style.fontFamily = "sans-serif";
+      banner.style.textAlign = "center";
+      banner.style.boxShadow = "0 4px 12px rgba(0,0,0,0.2)";
+      banner.innerHTML = "🚨 JS Error Detected: " + message + " in " + source + " at line " + lineno;
+      document.body.appendChild(banner);
+      return false;
+    };
+  </script>
+  <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Atlassian Color Palette (ADG) */
+  --bg-body: #F4F5F7;
+  --bg-card: #FFFFFF;
+  --bg-header: #FFFFFF;
+  --bg-modal: #FFFFFF;
+  
+  --accent-blue: #0052CC;
+  --accent-blue-hover: #0065FF;
+  --accent-blue-subtle: #DEEBFF;
+  
+  --text-primary: #172B4D;
+  --text-secondary: #42526E;
+  --text-muted: #6B778C;
+  
+  --border-color: #DFE1E6;
+  --border-focus: #4C9AFF;
+  
+  --status-open: #36B37E;
+  --status-open-bg: #E3FCEF;
+  --status-owned: #0052CC;
+  --status-owned-bg: #DEEBFF;
+  --status-error: #FF5630;
+  --status-error-bg: #FFEBE6;
+  
+  --shadow-sm: 0 1px 1px rgba(9, 30, 66, 0.25);
+  --shadow-md: 0 4px 8px -2px rgba(9, 30, 66, 0.25);
+  --shadow-lg: 0 12px 24px -6px rgba(9, 30, 66, 0.25);
+
+  --radius-sm: 3px;
+  --radius-md: 4px;
+}
+
+[data-theme="dark"] {
+  --bg-body: #1D2125;
+  --bg-card: #22272B;
+  --bg-header: #22272B;
+  --bg-modal: #22272B;
+  
+  --accent-blue: #579DFF;
+  --accent-blue-hover: #85B8FF;
+  --accent-blue-subtle: #003884;
+  
+  --text-primary: #B6C2CF;
+  --text-secondary: #9FADBC;
+  --text-muted: #8C9BAB;
+  
+  --border-color: #A6C5E229;
+  --border-focus: #579DFF;
+  
+  --status-open: #4BCE97;
+  --status-open-bg: #164B35;
+  --status-owned: #579DFF;
+  --status-owned-bg: #003884;
+  --status-error: #F87168;
+  --status-error-bg: #5D1F1A;
+}
+
+/* Global Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background-color: var(--bg-body);
+  color: var(--text-primary);
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+/* Layout */
+header {
+  background: var(--bg-header);
+  border-bottom: 1px solid var(--border-color);
+  padding: 12px 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
+}
+
+.header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-icon {
+  width: 32px;
+  height: 32px;
+  background: var(--accent-blue);
+  color: white;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 16px;
+}
+
+.brand h1 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.5px;
+}
+
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Metrics */
+.metrics-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.metric-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  min-width: 160px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+  transition: background-color 0.1s;
+}
+
+.metric-card:hover {
+  background-color: var(--border-color);
+}
+
+.metric-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.metric-value {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.metric-card.open-metric .metric-value { color: var(--status-open); }
+.metric-card.owned-metric .metric-value { color: var(--accent-blue); }
+.metric-card.broken-metric .metric-value { color: var(--status-error); }
+
+/* Controls */
+.controls-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 16px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Floating Help Button */
+.floating-btn {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--accent-purple);
+  color: white;
+  border: none;
+  box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  z-index: 999;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.floating-btn:hover {
+  transform: scale(1.1) rotate(15deg);
+  box-shadow: 0 6px 20px rgba(108, 92, 231, 0.6);
+}
+
+/* Guide Modal Items */
+.guide-item {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  margin-bottom: 12px;
+  border: 1px solid var(--border-color);
+  transition: transform 0.2s ease;
+}
+
+.guide-item:hover {
+  transform: translateX(5px);
+  border-color: var(--accent-purple);
+}
+
+.guide-item i {
+  font-size: 24px;
+  color: var(--accent-purple);
+  margin-top: 4px;
+  width: 32px;
+  text-align: center;
+}
+
+.guide-item h4 {
+  margin: 0 0 4px 0;
+  color: var(--text-primary);
+}
+
+.guide-item p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* Responsive adjust for floating btn */
+@media (max-width: 768px) {
+  .floating-btn {
+    bottom: 20px;
+    right: 20px;
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .controls-card {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+  }
+  .search-container {
+    max-width: 300px;
+  }
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  background: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0 12px;
+  width: 100%;
+  max-width: 400px;
+  transition: border-color 0.15s ease-in-out;
+}
+
+.search-container:focus-within {
+  border-color: var(--border-focus);
+}
+
+#search-bar {
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  padding: 10px 0;
+  width: 100%;
+  outline: none;
+  font-size: 14px;
+}
+
+.controls-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.main-controls {
+  display: flex;
+  gap: 12px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* Buttons */
+.btn {
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.1s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-primary {
+  background: var(--accent-blue);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--accent-blue-hover);
+}
+
+.btn-secondary {
+  background: var(--bg-body);
+  color: #42526e;
+}
+
+.btn-secondary:hover {
+  background: var(--border-color);
+}
+
+.btn-action-large {
+  padding: 10px 16px;
+  font-weight: 600;
+  background: var(--accent-blue);
+  color: white;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.1s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-action-large:hover {
+  background: var(--accent-blue-hover);
+}
+
+/* Tabs */
+.category-tabs {
+  display: flex;
+  gap: 24px;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.tab-btn {
+  padding: 8px 4px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-secondary);
+  font-weight: 500;
+  cursor: pointer;
+  margin-bottom: -2px;
+  transition: all 0.2s;
+}
+
+.tab-btn.active {
+  color: var(--accent-blue);
+  border-bottom-color: var(--accent-blue);
+}
+
+/* Status Chips */
+.status-filters {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.filter-chip {
+  padding: 4px 10px;
+  background: var(--border-color);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 600;
+  color: #42526e;
+  cursor: pointer;
+}
+
+.filter-chip.active {
+  background: var(--accent-blue);
+  color: white;
+}
+
+/* Asset Cards */
+.asset-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.asset-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+}
+
+.asset-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: #C1C7D0;
+}
+
+.asset-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.asset-id-tag {
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--border-color);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+}
+
+.status-badge {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.status-badge.open { background: var(--status-open-bg); color: var(--status-open); }
+.status-badge.owned { background: var(--status-owned-bg); color: var(--status-owned); }
+.status-badge.not-working { background: var(--status-error-bg); color: var(--status-error); }
+
+.asset-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--accent-blue);
+  margin-bottom: 8px;
+}
+
+.asset-title:hover { text-decoration: underline; }
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.condition-badge {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 2px 8px;
+  background: var(--bg-body);
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* Modals */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(9, 30, 66, 0.5);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  visibility: hidden;
+  opacity: 0;
+  transition: all 0.2s;
+}
+
+.modal-overlay.active {
+  visibility: visible;
+  opacity: 1;
+}
+
+.modal-content {
+  background: var(--bg-modal);
+  width: 95%;
+  max-width: 600px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+}
+
+.modal-header {
+  padding: 16px 24px;
+  border-bottom: 2px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h2 { font-size: 20px; font-weight: 600; }
+
+.modal-body {
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.modal-footer {
+  padding: 16px 24px;
+  border-top: 2px solid var(--border-color);
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* Details Modal Layout */
+.detail-tabs {
+  display: flex;
+  gap: 20px;
+  border-bottom: 2px solid var(--border-color);
+  padding: 0 24px;
+}
+
+.detail-tab {
+  padding: 12px 4px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-secondary);
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+  margin-bottom: -2px;
+}
+
+.detail-tab.active {
+  color: var(--accent-blue);
+  border-bottom-color: var(--accent-blue);
+}
+
+.detail-pane {
+  display: none;
+  padding: 24px;
+}
+
+.detail-pane.active {
+  display: block;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.detail-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.specs-list {
+  background: var(--bg-body);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.spec-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 4px;
+}
+
+.spec-key {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.spec-val {
+  color: var(--text-primary);
+}
+
+
+/* Forms */
+.form-group { margin-bottom: 16px; }
+.form-label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px; }
+
+/* History */
+.history-item {
+  padding: 12px;
+  border-left: 2px solid var(--border-color);
+  margin-left: 10px;
+  position: relative;
+}
+
+.history-item::before {
+  content: '';
+  position: absolute;
+  left: -6px;
+  top: 16px;
+  width: 10px;
+  height: 10px;
+  background: var(--bg-body);
+  border: 2px solid var(--text-muted);
+  border-radius: 50%;
+}
+
+.history-time { font-size: 11px; font-weight: 600; color: var(--text-muted); }
+.history-desc { font-size: 13px; margin-top: 2px; }
+
+/* Users */
+.user-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  background: var(--accent-blue-subtle);
+  color: var(--accent-blue);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+/* Toast (Atlassian Flags) */
+#toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 3000;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.toast {
+  background: var(--bg-card);
+  padding: 16px;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-lg);
+  border-left: 4px solid var(--accent-blue);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 300px;
+  animation: flagIn 0.3s forwards;
+}
+
+@keyframes flagIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.toast.success { border-left-color: var(--status-open); }
+.toast.error { border-left-color: var(--status-error); }
+
+/* QR Scanner */
+.scanner-container {
+  width: 100%;
+  aspect-ratio: 4/3;
+  background: #000;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 2px solid var(--border-color);
+}
+
+#empty-state {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+/* Form Controls (ADG Style) */
+.form-input {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--border-color);
+  background-color: var(--bg-body);
+  color: var(--text-primary);
+  font-size: 14px;
+  transition: all 0.1s ease-in-out;
+}
+
+.form-input:focus {
+  background-color: var(--bg-card);
+  border-color: var(--border-focus);
+  outline: none;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+/* Modal Internal Layouts */
+.modal-body-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+}
+
+.modal-section {
+  margin-bottom: 24px;
+}
+
+.modal-section-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 4px;
+}
+
+/* Form Extras */
+.form-select, .form-textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--border-color);
+  background-color: var(--bg-body);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.form-select:focus, .form-textarea:focus {
+  background-color: var(--bg-card);
+  border-color: var(--border-focus);
+  outline: none;
+}
+
+.form-textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.form-error {
+  color: var(--status-error);
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 4px;
+  display: none;
+}
+
+.form-error.active {
+  display: block;
+}
+
+/* History Timeline */
+.history-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 10px 0;
+}
+
+.timeline-year-header {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: var(--border-color);
+  padding: 4px 12px;
+  border-radius: var(--radius-sm);
+  margin: 16px 0 8px 0;
+  display: inline-block;
+  width: fit-content;
+}
+
+.timeline-item {
+  padding: 12px;
+  border-left: 2px solid var(--border-color);
+  margin-left: 10px;
+  position: relative;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -6px;
+  top: 18px;
+  width: 10px;
+  height: 10px;
+  background: var(--bg-body);
+  border: 2px solid var(--border-color);
+  border-radius: 50%;
+}
+
+.timeline-time {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.timeline-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-top: 2px;
+}
+
+.timeline-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.timeline-asset-id {
+  font-size: 12px;
+  color: var(--accent-blue);
+  margin-top: 2px;
+}
+
+/* User List & Directory */
+.user-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.user-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.user-row:hover {
+  background: var(--bg-body);
+}
+
+/* Missing Status Variables for compatibility */
+:root {
+  --status-error-border: rgba(255, 86, 48, 0.3);
+  --accent-purple: #6554C0;
+  --accent-teal: #00B8D9;
+}
+
+/* Theme Toggle Button */
+.theme-toggle-fixed {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  z-index: 1000;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-lg);
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.theme-toggle-fixed:hover {
+  background-color: var(--border-color);
+}
+
+/* Category Filter Hub Dropdown Custom Styling */
+#more-categories-select {
+  border: 1px solid var(--border-color) !important;
+  background-color: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+  font-family: inherit;
+}
+
+#more-categories-select:hover {
+  border-color: var(--accent-blue) !important;
+  box-shadow: 0 0 0 2px var(--accent-blue-subtle);
+}
+
+#more-categories-select:focus {
+  border-color: var(--accent-blue) !important;
+  box-shadow: 0 0 0 3px var(--accent-blue-subtle);
+}
+
+/* Dark mode styling for dropdown option texts */
+[data-theme="dark"] #more-categories-select option {
+  background-color: #22272B;
+  color: #B6C2CF;
+}
+
+/* Atlassian Connection Status Dashboard Styling */
+.connection-status-card {
+  background: var(--bg-body);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 20px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.connection-status-card .status-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.connection-status-card .status-title {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.connection-status-card .status-details {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+/* Status Badges */
+.connection-badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-unconfigured {
+  background-color: var(--border-color);
+  color: var(--text-muted);
+}
+
+.status-ready {
+  background-color: var(--accent-blue-subtle);
+  color: var(--accent-blue);
+}
+
+.status-connected {
+  background-color: var(--status-open-bg);
+  color: var(--status-open);
+}
+
+.status-error {
+  background-color: var(--status-error-bg);
+  color: var(--status-error);
+}
+
+.status-syncing {
+  background-color: #FFF0B3;
+  color: #8F6B00;
+}
+
+/* Card Glows based on state */
+.connection-status-card.connected {
+  border-left: 4px solid var(--status-open);
+  box-shadow: 0 0 10px rgba(54, 179, 126, 0.15);
+}
+
+.connection-status-card.error {
+  border-left: 4px solid var(--status-error);
+  box-shadow: 0 0 10px rgba(255, 86, 48, 0.15);
+}
+
+.connection-status-card.syncing {
+  border-left: 4px solid #FFAB00;
+  animation: pulse-border 1.5s infinite alternate;
+}
+
+@keyframes pulse-border {
+  0% { border-color: #FFC400; box-shadow: 0 0 5px rgba(255, 171, 0, 0.2); }
+  100% { border-color: #FF7400; box-shadow: 0 0 15px rgba(255, 171, 0, 0.5); }
+}
+
+/* Scrollable error block */
+.error-details-block {
+  margin-top: 6px;
+  padding: 8px 12px;
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 86, 48, 0.2);
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 11px;
+  color: var(--status-error);
+  max-height: 80px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+}
+
+/* Dark mode overrides for error-details-block */
+[data-theme="dark"] .error-details-block {
+  background-color: #1c100e;
+  border-color: rgba(248, 113, 104, 0.3);
+  color: #F87168;
+}
+
+/* Sliding Switch Toggle CSS */
+.switch-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-secondary);
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  margin-bottom: 16px;
+}
+
+.switch-label-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.switch-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.switch-subtitle {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.switch-control {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 22px;
+}
+
+.switch-control input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--border-color);
+  transition: .3s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .3s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+
+input:checked + .slider {
+  background-color: var(--accent-purple);
+}
+
+input:checked + .slider:before {
+  transform: translateX(22px);
+}
+
+/* Translucent fading for disabled elements */
+.disabled-fade {
+  opacity: 0.45;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Custom Offline Badge style */
+.status-offline {
+  background-color: #EAE6FF;
+  color: var(--accent-purple);
+}
+
+[data-theme="dark"] .status-offline {
+  background-color: #28224D;
+  color: #9F8FEF;
+}
+
+/* Connection Telemetry Diagnostics Terminal Styles */
+.diagnostics-panel {
+  margin-top: 16px;
+  background-color: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 12px;
+  padding: 16px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12px;
+  color: #c9d1d9;
+  line-height: 1.6;
+  max-height: 250px;
+  overflow-y: auto;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+  display: none; /* Collapsed by default */
+  animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.diagnostics-panel.active {
+  display: block;
+}
+
+.diagnostics-header {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #21262d;
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+  color: #8b949e;
+  font-size: 11px;
+}
+
+.diagnostics-header span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.trace-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  opacity: 0;
+  transform: translateY(4px);
+  animation: fadeInLine 0.25s forwards cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.trace-line.success {
+  color: #3fb950;
+}
+
+.trace-line.warning {
+  color: #d29922;
+}
+
+.trace-line.error {
+  color: #f85149;
+}
+
+.trace-line.info {
+  color: #58a6ff;
+}
+
+/* Spinner indicator in terminal */
+.trace-spinner {
+  width: 12px;
+  height: 12px;
+  border: 2px solid #58a6ff;
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+}
+
+/* Share QR Container Styles */
+.qr-share-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 16px;
+}
+
+.qr-code-img {
+  width: 220px;
+  height: 220px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  background-color: white;
+  padding: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  margin-bottom: 16px;
+}
+
+.qr-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  max-width: 280px;
+}
+
+@keyframes fadeInLine {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Premium Animated Custom Buttons */
+
+/* Settings Modal Buttons */
+.btn-settings-save {
+  width: 100%;
+  background-color: var(--accent-blue);
+  color: white;
+  font-weight: bold;
+  border-radius: 8px;
+  padding: 12px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 6px rgba(0, 101, 255, 0.15);
+}
+
+.btn-settings-save:hover {
+  background-color: var(--accent-blue-hover);
+  transform: translateY(-1.5px);
+  box-shadow: 0 4px 12px rgba(0, 101, 255, 0.3);
+}
+
+.btn-settings-save:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 101, 255, 0.15);
+}
+
+.btn-settings-sync {
+  flex: 1;
+  min-width: 120px;
+  background-color: var(--accent-blue);
+  color: white;
+  border: none;
+  font-weight: bold;
+  border-radius: 8px;
+  padding: 10px 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 6px rgba(0, 101, 255, 0.15);
+}
+
+.btn-settings-sync:hover {
+  background-color: var(--accent-blue-hover);
+  transform: translateY(-1.5px);
+  box-shadow: 0 4px 12px rgba(0, 101, 255, 0.3);
+}
+
+.btn-settings-sync:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 101, 255, 0.15);
+}
+
+.btn-settings-clear {
+  flex: 1;
+  min-width: 120px;
+  color: var(--status-error);
+  background: rgba(255, 75, 75, 0.08);
+  border: 1px solid rgba(255, 75, 75, 0.15);
+  font-weight: bold;
+  border-radius: 8px;
+  padding: 10px 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-settings-clear:hover {
+  background: rgba(255, 75, 75, 0.15);
+  border-color: rgba(255, 75, 75, 0.3);
+  transform: translateY(-1.5px);
+}
+
+.btn-settings-clear:active {
+  transform: translateY(0);
+}
+
+/* Local Backup Importer Buttons */
+.btn-local-import {
+  background: var(--accent-blue);
+  color: white;
+  border: none;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-local-import:hover {
+  background-color: var(--accent-blue-hover);
+  transform: translateY(-1.5px);
+  box-shadow: 0 4px 12px rgba(0, 101, 255, 0.25);
+}
+
+.btn-local-import:active {
+  transform: translateY(0);
+}
+
+/* Settings Help Banner Button */
+.btn-settings-help {
+  padding: 6px 12px;
+  background: var(--accent-purple);
+  color: white;
+  border: none;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-settings-help:hover {
+  background: #5b4bc4;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(108, 92, 231, 0.3);
+}
+
+.btn-settings-help:active {
+  transform: translateY(0);
+}
+
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-container">
+      <div class="header-actions">
+        <button id="settings-btn" class="btn btn-secondary" aria-label="Settings">
+          <i class="fa-solid fa-gear"></i>
+        </button>
+        <button id="lang-toggle-btn" class="btn btn-secondary">EN / ES</button>
+      </div>
+      <div class="brand">
+        <div class="brand-icon">AG</div>
+        <h1 data-i18n="brand_name">AssetGuard</h1>
+      </div>
+
+      <div class="metrics-row">
+        <div class="metric-card">
+          <span class="metric-label" data-i18n="total_assets">Total Assets</span>
+          <span class="metric-value" id="metric-total">0</span>
+        </div>
+        <div class="metric-card open-metric">
+          <span class="metric-label" data-i18n="open_assets">Open</span>
+          <span class="metric-value" id="metric-open">0</span>
+        </div>
+        <div class="metric-card owned-metric">
+          <span class="metric-label" data-i18n="owned_assets">Owned</span>
+          <span class="metric-value" id="metric-owned">0</span>
+        </div>
+        <div class="metric-card broken-metric">
+          <span class="metric-label" data-i18n="not_working_assets">Broken</span>
+          <span class="metric-value" id="metric-broken">0</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="controls-card">
+      <div class="search-bar-container" style="flex: 1; position: relative; width: 100%;">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input type="text" id="asset-search-input" data-i18n-placeholder="search_placeholder" placeholder="Search ID, Model, or Owner..." class="search-input" style="width: 100%;">
+      </div>
+      <div class="controls-actions">
+        <div class="main-controls">
+          <button id="add-asset-btn" class="btn btn-primary">
+            <i class="fa-solid fa-plus"></i> <span data-i18n="add_asset">Add Asset</span>
+          </button>
+          <button id="scan-qr-btn" class="btn btn-secondary">
+            <i class="fa-solid fa-qrcode"></i> <span data-i18n="scan_qr">Scan QR Code</span>
+          </button>
+          <button id="people-directory-trigger-btn" class="btn btn-secondary">
+            <i class="fa-solid fa-users"></i> <span data-i18n="people">People</span>
+          </button>
+          <button id="global-history-btn" class="btn btn-secondary">
+            <i class="fa-solid fa-clock-rotate-left"></i> <span data-i18n="history_title">Audit History</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="category-tabs" id="category-tabs" style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 16px;">
+      <button class="tab-btn active" data-category="All" data-i18n="all_categories">All Categories</button>
+      <button class="tab-btn" data-category="Laptop" data-i18n="laptop">Laptops</button>
+      <button class="tab-btn" data-category="Monitor" data-i18n="monitor">Monitors</button>
+      <button class="tab-btn" data-category="Projector" data-i18n="projector">Projectors</button>
+      <button class="tab-btn" data-category="Printer" data-i18n="printer">Printers</button>
+      
+      <!-- Custom select dropdown for the remaining 25+ categories -->
+      <div style="position: relative; display: inline-block;">
+        <select id="more-categories-select" class="form-select" style="padding: 8px 32px 8px 12px; border-radius: 20px; font-size: 13px; font-weight: 500; height: 38px; border: 1px solid var(--border-color); background: var(--bg-card); cursor: pointer; max-width: 200px;">
+          <option value="" data-i18n="more_categories">More Categories...</option>
+          <option value="Tablet" data-i18n="tablet">Tablets</option>
+          <option value="Phone" data-i18n="phone">Phones</option>
+          <option value="Computer" data-i18n="computer">Computers</option>
+          <option value="Digital Signage" data-i18n="digital_signage">Digital Signage</option>
+          <option value="Charger" data-i18n="charger">Chargers</option>
+          <option value="AV Cart" data-i18n="av_cart">AV Carts</option>
+          <option value="Mixing Console" data-i18n="mixing_console">Mixing Consoles</option>
+          <option value="Microphone" data-i18n="microphone">Microphones</option>
+          <option value="Receiver" data-i18n="receiver">Receivers</option>
+          <option value="Laptop Storage Cart" data-i18n="laptop_storage_cart">Laptop Storage Carts</option>
+          <option value="Scanner" data-i18n="scanner">Scanners</option>
+          <option value="Video conferencing kit" data-i18n="video_conferencing_kit">Video conferencing kits</option>
+          <option value="Jamboard" data-i18n="jamboard">Jamboards</option>
+          <option value="Speakermic" data-i18n="speakermic">Speakermics</option>
+          <option value="Drive - External" data-i18n="drive_external">External Drives</option>
+          <option value="Camera" data-i18n="camera">Cameras</option>
+          <option value="Projection screen" data-i18n="projection_screen">Projection screens</option>
+          <option value="Sensor" data-i18n="sensor">Sensors</option>
+          <option value="Speaker" data-i18n="speaker">Speakers</option>
+          <option value="Mobile hotspot" data-i18n="mobile_hotspot">Mobile hotspots</option>
+          <option value="Transducer" data-i18n="transducer">Transducers</option>
+          <option value="UPS" data-i18n="ups">UPS</option>
+          <option value="Time Clock" data-i18n="time_clock">Time Clocks</option>
+          <option value="POS Devices" data-i18n="pos_devices">POS Devices</option>
+          <option value="Security Key" data-i18n="security_key">Security Keys</option>
+          <option value="Operating System" data-i18n="operating_system">Operating Systems</option>
+          <option value="Software" data-i18n="software">Software</option>
+          <option value="Other" data-i18n="other">Others</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="status-filters" id="status-filters">
+      <button class="filter-chip active" data-status="All" data-i18n="all_assets">All Status</button>
+      <button class="filter-chip" data-status="Open" data-i18n="status_open">Available</button>
+      <button class="filter-chip" data-status="Owned" data-i18n="status_owned">In Use</button>
+      <button class="filter-chip" data-status="Not Working" data-i18n="status_not_working">Broken</button>
+    </div>
+
+    <div id="results-counter" style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;"></div>
+
+    <div class="asset-grid" id="asset-list-grid"></div>
+
+    <!-- Client-side Premium Pagination Controls -->
+    <div id="pagination-controls" style="display: none; justify-content: center; align-items: center; gap: 20px; margin: 24px auto 12px auto; padding: 10px 20px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 30px; max-width: max-content;">
+      <button id="prev-page-btn" class="btn btn-secondary" style="border-radius: 20px; padding: 6px 16px; font-size: 12px; display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.2s ease;">
+        <i class="fa-solid fa-chevron-left" style="font-size: 10px;"></i> Prev
+      </button>
+      <span id="page-indicator" style="font-size: 13px; font-weight: 600; color: var(--text-primary); min-width: 100px; text-align: center;">Page 1 of 1</span>
+      <button id="next-page-btn" class="btn btn-secondary" style="border-radius: 20px; padding: 6px 16px; font-size: 12px; display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.2s ease;">
+        Next <i class="fa-solid fa-chevron-right" style="font-size: 10px;"></i>
+      </button>
+    </div>
+
+    <div id="empty-state" style="display: none;">
+      <i class="fa-solid fa-box-open"></i>
+      <h3 data-i18n="no_results">No Assets Found</h3>
+      <p data-i18n="no_results_desc">Adjust filters to find assets.</p>
+    </div>
+  </main>
+
+  <!-- Asset Details Modal -->
+  <div id="details-modal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="details-modal-title">ASSET-ID</h2>
+        <button id="details-close-btn" class="modal-close-btn">&times;</button>
+      </div>
+      <div class="detail-tabs">
+        <button class="detail-tab active" data-tab="overview" data-i18n="details">Overview</button>
+        <button class="detail-tab" data-tab="edit" data-i18n="modal_edit_title">Actions</button>
+        <button class="detail-tab" data-tab="history" data-i18n="history_title">History</button>
+        <button class="detail-tab" data-tab="qr" data-i18n="scan_qr">QR Tag</button>
+      </div>
+      <div class="modal-body">
+        <div id="detail-pane-overview" class="detail-pane active">
+          <div class="asset-meta">
+            <div class="meta-item"><strong data-i18n="asset_id">ID</strong>: <span id="view-id">--</span></div>
+            <div class="meta-item"><strong data-i18n="name">Name</strong>: <span id="view-name">--</span></div>
+            <div class="meta-item"><strong data-i18n="category">Category</strong>: <span id="view-category">--</span></div>
+            <div class="meta-item"><strong data-i18n="serial_number">Serial</strong>: <span id="view-serial">--</span></div>
+            <div class="meta-item"><strong data-i18n="location">Location</strong>: <span id="view-location">--</span></div>
+            <div class="meta-item"><strong data-i18n="status">Status</strong>: <span id="view-status-badge" class="status-badge">--</span></div>
+            <div class="meta-item"><strong data-i18n="owner">Owner</strong>: <span id="view-owner-text">--</span></div>
+            <div class="meta-item" id="view-jira-link-container" style="display: none;">
+               <strong style="color: var(--text-primary);">Atlassian Assets</strong>: 
+               <a id="view-jira-link" href="#" target="_blank" style="color: var(--accent-blue); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; border-bottom: 1px dashed var(--accent-blue);">
+                 <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 11px;"></i> Open in Jira
+               </a>
+             </div>
+          </div>
+          <div style="margin-top: 16px;">
+            <h4 class="detail-label" data-i18n="specs">Specifications</h4>
+            <div id="view-specs-list" class="specs-list"></div>
+          </div>
+          <div style="margin-top: 16px;">
+            <h4 class="detail-label" data-i18n="condition_details">Condition</h4>
+            <p id="view-condition" class="condition-badge">--</p>
+          </div>
+        </div>
+
+        <div id="detail-pane-edit" class="detail-pane">
+          <form id="edit-asset-form">
+            <input type="hidden" id="edit-asset-id">
+            <div class="form-group">
+              <label class="form-label" data-i18n="status">Status</label>
+              <select id="edit-status" class="form-select">
+                <option value="Open" data-i18n="status_open">Open</option>
+                <option value="Owned" data-i18n="status_owned">Owned</option>
+                <option value="Not Working" data-i18n="status_not_working">Not Working</option>
+              </select>
+            </div>
+            <div id="edit-owner-group" class="form-group" style="display: none;">
+              <label class="form-label" data-i18n="owner">Owner</label>
+              <input type="text" id="edit-owner" class="form-input">
+              <div id="error-edit-owner" class="form-error">Owner required.</div>
+            </div>
+            <div id="edit-issue-group" class="form-group" style="display: none;">
+              <label class="form-label" data-i18n="condition_details">Issue</label>
+              <textarea id="edit-condition-notworking" class="form-textarea"></textarea>
+              <div id="error-edit-issue" class="form-error">Issue description required.</div>
+            </div>
+            <div id="edit-condition-normal-group" class="form-group">
+              <label class="form-label" data-i18n="condition">Condition</label>
+              <textarea id="edit-condition-normal" class="form-textarea"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label" data-i18n="location">Location</label>
+              <input type="text" id="edit-location" class="form-input">
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%;" data-i18n="save_changes">Save Changes</button>
+          </form>
+        </div>
+
+        <div id="detail-pane-history" class="detail-pane">
+          <div id="view-history-timeline" class="history-timeline"></div>
+        </div>
+
+        <div id="detail-pane-qr" class="detail-pane">
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
+            <div id="asset-qr-code-container" style="padding: 16px; background: white; border-radius: 8px;"></div>
+            <button class="btn btn-secondary" onclick="window.print()" data-i18n="print_tag">Print Tag</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Add Asset Modal -->
+  <div id="add-asset-modal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 data-i18n="add_asset">Add Asset</h2>
+        <button id="add-asset-close-btn" class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="add-asset-form">
+          <div class="form-group">
+            <label class="form-label" data-i18n="asset_id">Asset ID</label>
+            <input type="text" id="add-id" class="form-input" required>
+            <div id="error-add-id-exists" class="form-error">ID already exists.</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="model_name">Model Name</label>
+            <input type="text" id="add-name" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="category">Category</label>
+            <select id="add-category" class="form-select">
+              <option value="Laptop" data-i18n="laptop">Laptop</option>
+              <option value="Tablet" data-i18n="tablet">Tablet</option>
+              <option value="Phone" data-i18n="phone">Phone</option>
+              <option value="Monitor" data-i18n="monitor">Monitor</option>
+              <option value="Computer" data-i18n="computer">Computer</option>
+              <option value="Projector" data-i18n="projector">Projector</option>
+              <option value="Digital Signage" data-i18n="digital_signage">Digital Signage</option>
+              <option value="Printer" data-i18n="printer">Printer</option>
+              <option value="Charger" data-i18n="charger">Charger</option>
+              <option value="AV Cart" data-i18n="av_cart">AV Cart</option>
+              <option value="Mixing Console" data-i18n="mixing_console">Mixing Console</option>
+              <option value="Microphone" data-i18n="microphone">Microphone</option>
+              <option value="Receiver" data-i18n="receiver">Receiver</option>
+              <option value="Laptop Storage Cart" data-i18n="laptop_storage_cart">Laptop Storage Cart</option>
+              <option value="Scanner" data-i18n="scanner">Scanner</option>
+              <option value="Video conferencing kit" data-i18n="video_conferencing_kit">Video conferencing kit</option>
+              <option value="Jamboard" data-i18n="jamboard">Jamboard</option>
+              <option value="Speakermic" data-i18n="speakermic">Speakermic</option>
+              <option value="Drive - External" data-i18n="drive_external">External Drive</option>
+              <option value="Camera" data-i18n="camera">Camera</option>
+              <option value="Projection screen" data-i18n="projection_screen">Projection screen</option>
+              <option value="Sensor" data-i18n="sensor">Sensor</option>
+              <option value="Speaker" data-i18n="speaker">Speaker</option>
+              <option value="Mobile hotspot" data-i18n="mobile_hotspot">Mobile hotspot</option>
+              <option value="Transducer" data-i18n="transducer">Transducer</option>
+              <option value="UPS" data-i18n="ups">UPS</option>
+              <option value="Time Clock" data-i18n="time_clock">Time Clock</option>
+              <option value="POS Devices" data-i18n="pos_devices">POS Devices</option>
+              <option value="Security Key" data-i18n="security_key">Security Key</option>
+              <option value="Operating System" data-i18n="operating_system">Operating System</option>
+              <option value="Software" data-i18n="software">Software</option>
+              <option value="Other" data-i18n="other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="serial_number">Serial Number</label>
+            <input type="text" id="add-serial" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="location">Location</label>
+            <input type="text" id="add-location" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="acquisition_date">Acquisition Date</label>
+            <input type="date" id="add-acquisition-date" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="condition_details">Condition Notes</label>
+            <textarea id="add-condition" class="form-textarea" required></textarea>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px;">
+            <div class="form-group"><label class="form-label" data-i18n="cpu">CPU</label><input type="text" id="add-spec-cpu" class="form-input"></div>
+            <div class="form-group"><label class="form-label" data-i18n="ram">RAM</label><input type="text" id="add-spec-ram" class="form-input"></div>
+            <div class="form-group"><label class="form-label" data-i18n="storage">Storage</label><input type="text" id="add-spec-storage" class="form-input"></div>
+            <div class="form-group"><label class="form-label" data-i18n="os">OS</label><input type="text" id="add-spec-os" class="form-input"></div>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%;" data-i18n="register_asset">Register Asset</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- QR Scanner Modal -->
+  <div id="scanner-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 450px;">
+      <div class="modal-header">
+        <h2 data-i18n="modal_scan_title">QR Scanner</h2>
+        <button id="scanner-close-btn" class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="scanner-container">
+          <div id="qr-reader"></div>
+        </div>
+        <div id="scanner-output-status" class="scanner-status" style="text-align: center; margin-top: 12px; font-size: 12px; color: var(--text-muted);"></div>
+        <div style="margin-top: 16px; border-top: 1px solid var(--border-color); padding-top: 16px;">
+          <p style="font-size: 11px; color: var(--text-muted); text-align: center; margin-bottom: 8px;" data-i18n="scanner_manual_hint">Can't scan? Type the ID below:</p>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="manual-scan-input" class="form-input" placeholder="e.g. LAP-101" style="flex: 1;">
+            <button id="manual-scan-btn" class="btn btn-primary" style="padding: 0 16px;">Go</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- People Modal -->
+  <div id="people-directory-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 500px;">
+      <div class="modal-header">
+        <h2 data-i18n="people">People</h2>
+        <button id="people-directory-close-btn" class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="search-container" style="max-width: 100%; margin-bottom: 16px;">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <input type="text" id="people-search-input" placeholder="Search people...">
+        </div>
+        <div id="people-list" class="user-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Profile Modal -->
+  <div id="user-profile-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 600px;">
+      <div class="modal-header">
+        <h2 id="user-profile-name">User Profile</h2>
+        <button id="user-profile-close-btn" class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="user-profile-stats" style="margin-bottom: 16px; font-weight: 600; color: var(--text-muted);"></div>
+        <div id="user-assets-list" class="user-list"></div>
+        <div style="margin-top: 24px; display: flex; justify-content: flex-end;">
+          <button id="bulk-return-btn" class="btn btn-secondary" style="color: var(--status-error);">Return All Assets</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Global History Modal -->
+  <div id="global-history-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 800px;">
+      <div class="modal-header">
+        <h2 data-i18n="global_history_title">Audit Log</h2>
+        <button id="global-history-close-btn" class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;">
+          <select id="global-history-category-filter" class="form-select" style="flex: 1;"><option value="All">All Categories</option></select>
+          <select id="global-history-year-filter" class="form-select" style="flex: 1;"><option value="All">All Years</option></select>
+          <input type="text" id="global-history-search" class="form-input" style="flex: 2;" placeholder="Search logs...">
+        </div>
+        <div id="global-history-timeline" class="history-timeline"></div>
+        <div style="margin-top: 20px; display: flex; justify-content: space-between; align-items: center;">
+          <button id="clear-all-data-btn" class="btn btn-secondary" style="color: var(--status-error);" data-i18n="clear_all_data">Clear All Data</button>
+          <div style="display: flex; gap: 8px;">
+            <input type="file" id="import-file-input" accept=".csv,.json" style="display: none;">
+            <button id="import-data-btn" class="btn btn-local-import"><i class="fa-solid fa-file-import"></i> Import (.csv / .json)</button>
+            <button id="export-data-btn" class="btn btn-secondary" data-i18n="backup_data">Download Backup (.json)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settings-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 500px;">
+      <div class="modal-header">
+        <h2 data-i18n="atlassian_connection">Atlassian Connection</h2>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <button id="settings-help-btn" class="btn btn-settings-help">
+            <i class="fa-solid fa-circle-question"></i> <span data-i18n="btn_help">Help</span>
+          </button>
+          <button id="settings-close-btn" class="modal-close-btn">&times;</button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <!-- Help Section (Hidden by default) -->
+        <div id="settings-help-section" class="guide-section" style="display: none; margin-bottom: 20px; padding: 16px; background: var(--bg-secondary); border-radius: 12px; border: 1px solid var(--accent-purple);">
+          <h4 style="margin-top: 0; color: var(--accent-purple);"><i class="fa-solid fa-lightbulb"></i> Atlassian Setup Guide</h4>
+          <ol style="font-size: 12.5px; color: var(--text-secondary); padding-left: 20px; line-height: 1.6; margin-bottom: 12px;">
+            <li><strong>Cloud ID / Subdomain</strong>: Click <em>Short Subdomain</em> and type your site name (e.g. <code>acme-corp</code> if your URL is <code>https://acme-corp.atlassian.net</code>).</li>
+            <li><strong>Workspace ID</strong>: Click <em>Short Schema ID</em> and type your schema number (e.g. <code>3</code> or <code>14</code>), OR click <em>Long UUID</em> and enter your 36-character Workspace UUID.</li>
+            <li><strong>Email & API Token</strong>: Enter your Atlassian account email and generated API Token (from <a href="https://id.atlassian.com/manage-profile/security/api-tokens" target="_blank" style="color: var(--accent-blue); text-decoration: underline;">id.atlassian.com</a>).</li>
+            <li><strong>Click Save & Sync</strong>: Click <strong>Save Changes</strong>, then click <strong>Sync Now</strong> under the connection status card!</li>
+            <li><strong>Alternative CSV Import</strong>: If you have a spreadsheet or exported CSV file from Jira, open <strong>Audit Trail</strong> (clock icon) and click <strong>Import (.csv / .json)</strong> for 1-second instant loading!</li>
+          </ol>
+          <button type="button" id="close-help-btn" class="btn btn-secondary btn-sm" style="width: 100%; font-weight: bold;" data-i18n="btn_got_it">Got it!</button>
+        </div>
+
+        <!-- Connection Status Dashboard -->
+        <div id="connection-status-card" class="connection-status-card unconfigured">
+          <div class="status-header">
+            <span class="status-title" data-i18n="conn_status_title">Connection Status</span>
+            <span id="connection-status-badge" class="connection-badge status-unconfigured" data-i18n="conn_status_unconfigured">Unconfigured</span>
+          </div>
+          <div id="connection-status-details" class="status-details">
+            <span data-i18n="conn_status_details_unconfigured">Please complete your connection settings below.</span>
+          </div>
+          <div style="margin-top: 8px; text-align: right; border-top: 1px solid var(--border-color); padding-top: 8px;">
+            <a href="#" id="run-diagnostics-btn" style="font-size: 11.5px; color: var(--accent-blue); text-decoration: underline; display: inline-flex; align-items: center; gap: 4px; font-weight: 600;">
+              <i class="fa-solid fa-terminal"></i> Run Connection Telemetry
+            </a>
+          </div>
+        </div>
+
+        <div id="diagnostics-panel" class="diagnostics-panel">
+          <div class="diagnostics-header">
+            <span><i class="fa-solid fa-terminal"></i> Telemetry Connection Tracer</span>
+            <span id="diagnostics-time">Ready</span>
+          </div>
+          <div id="diagnostics-trace-output">
+            <div class="trace-line info"><i class="fa-solid fa-info-circle"></i> Terminal Ready. Click "Run Connection Telemetry" above to begin trace.</div>
+          </div>
+        </div>
+
+
+        <form id="settings-form">
+          <!-- Offline Local Mode Sliding Switch -->
+          <div class="switch-container">
+            <div class="switch-label-group">
+              <span class="switch-title">Local Offline Mode</span>
+              <span class="switch-subtitle">Run offline purely using LocalStorage database</span>
+            </div>
+            <label class="switch-control">
+              <input type="checkbox" id="offline-mode-toggle">
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <!-- Atlassian Fields Container (Fades out in Offline Mode) -->
+          <div id="atlassian-fields-container" style="transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
+            <div class="form-group">
+              <label style="margin-bottom: 6px;">Atlassian Cloud ID</label>
+              <input type="text" id="api-cloud-id" class="form-input" placeholder="e.g. 12345678-abcd-...">
+              <div style="font-size: 11.5px; margin-top: 6px; color: var(--text-secondary); display: flex; align-items: center; gap: 4px;">
+                <i class="fa-solid fa-circle-question" style="color: var(--text-secondary);"></i>
+                <span>Don't know your Cloud ID? <a href="#" id="find-cloud-id-link" target="_blank" style="color: var(--text-secondary); text-decoration: underline;">Click here to find it instantly in your browser!</a></span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label style="margin-bottom: 6px;">Assets Workspace ID</label>
+              <input type="text" id="api-workspace-id" class="form-input" placeholder="e.g. 98765432-efgh-...">
+              <div style="font-size: 11.5px; margin-top: 6px; color: var(--text-secondary); display: flex; align-items: center; gap: 4px;">
+                <i class="fa-solid fa-circle-question" style="color: var(--text-secondary);"></i>
+                <span>Don't know your ID? <a href="#" id="find-workspace-id-link" target="_blank" style="color: var(--text-secondary); text-decoration: underline;">Click here to find it instantly in your browser!</a></span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label data-i18n="atlassian_email">Atlassian Email</label>
+              <input type="email" id="api-email" class="form-input" placeholder="your-email@company.com">
+            </div>
+            <div class="form-group">
+              <label data-i18n="api_token">API Token</label>
+              <input type="password" id="api-token" class="form-input" placeholder="Enter your API Token">
+            </div>
+            <div class="form-group">
+              <label>Maximum Sync Limit</label>
+              <select id="api-sync-limit" class="form-select">
+                <option value="50">50 assets (Fastest)</option>
+                <option value="100" selected>100 assets (Recommended)</option>
+                <option value="200">200 assets</option>
+                <option value="500">500 assets</option>
+                <option value="99999">Unlimited (Slower)</option>
+              </select>
+            </div>
+
+            <div class="settings-group" style="margin-top: 16px; background: var(--bg-secondary); padding: 16px; border-radius: 12px; border: 1px solid var(--accent-blue);">
+              <label style="color: var(--accent-blue); font-weight: bold; font-family: inherit;">label_magic_setup</label>
+              <input type="text" id="api-magic-url" class="form-input" placeholder="Paste Atlassian URL here to auto-fill IDs..." style="margin-top: 8px;">
+              <div id="magic-setup-assistant" style="display: none; margin-top: 12px; padding: 12px; background: var(--bg-body); border-radius: 8px; border: 1px dashed var(--accent-blue); font-size: 11.5px; line-height: 1.4; color: var(--text-secondary);"></div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 12px; margin-top: 24px; flex-direction: column;">
+            <button type="submit" class="btn-settings-save">Save Changes</button>
+            <div style="display: flex; gap: 12px; width: 100%; flex-wrap: wrap;">
+              <button type="button" id="sync-atlassian-btn" class="btn-settings-sync">
+                <i class="fa-solid fa-arrows-rotate"></i> Sync from Atlassian
+              </button>
+              <button type="button" id="clear-config-btn" class="btn-settings-clear">
+                Clear API Config
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <button id="theme-toggle-btn" class="theme-toggle-fixed" aria-label="Toggle Dark Mode">
+    <i class="fa-solid fa-moon"></i>
+  </button>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <!-- Floating Help Button -->
+  <button id="floating-help-btn" class="floating-btn" title="App Guide">
+    <i class="fa-solid fa-question"></i>
+  </button>
+
+  <!-- App Guide Modal -->
+  <div id="app-guide-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 500px;">
+      <div class="modal-header">
+        <h2 data-i18n="modal_guide_title">App Guide</h2>
+        <button id="guide-close-btn" class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="guide-item">
+          <i class="fa-solid fa-users"></i>
+          <div>
+            <h4 data-i18n="guide_people_title">People Directory</h4>
+            <p data-i18n="guide_people_desc">See a list of everyone who currently has company equipment and what they are holding.</p>
+          </div>
+        </div>
+        <div class="guide-item">
+          <i class="fa-solid fa-qrcode"></i>
+          <div>
+            <h4 data-i18n="guide_scan_title">QR Scanner</h4>
+            <p data-i18n="guide_scan_desc">Use your iPad camera to scan the QR tag on any piece of equipment to see its history or check it in/out.</p>
+          </div>
+        </div>
+        <div class="guide-item">
+          <i class="fa-solid fa-filter"></i>
+          <div>
+            <h4 data-i18n="guide_filter_title">Filters & Search</h4>
+            <p data-i18n="guide_filter_desc">Quickly find specific items by typing a name or filtering by category (Laptops, Tablets, etc.).</p>
+          </div>
+        </div>
+        <div class="guide-item">
+          <i class="fa-solid fa-sync"></i>
+          <div>
+            <h4 data-i18n="guide_sync_title">Atlassian Sync</h4>
+            <p data-i18n="guide_sync_desc">Pull your real inventory data directly from Jira Service Management Assets.</p>
+          </div>
+        </div>
+        <button id="guide-got-it-btn" class="btn btn-primary" style="width: 100%; margin-top: 20px;" data-i18n="btn_got_it">Got it!</button>
+      </div>
+    </div>
+  </div>
+
+
+
+  
+  
+  
+
+  <script>
+    // Embedded assets.js seed data
+window.itAssetSeeds = [
+  {
+    id: "smm-mon-24",
+    name: 'Dell UltraSharp 27" 4K USB-C Hub Monitor',
+    category: "Monitor",
+    status: "Open",
+    owner: "",
+    location: "Main HQ",
+    condition: "New",
+    serialNumber: "CN-0U2723QE-1024",
+    acquisitionDate: "2026-06-20",
+    specs: { cpu: "3840x2160 (4K)", ram: "60Hz IPS Black", storage: "90W Power Delivery", os: "USB-C, DisplayPort, HDMI" },
+    history: [{ timestamp: new Date().toISOString(), typeKey: "history_type_created", descKey: "history_added", params: {} }]
+  },
+  {
+    id: "smm2379",
+    name: "Lenovo ThinkPad X1 Carbon",
+    category: "Laptop",
+    status: "Open",
+    owner: "",
+    location: "Main HQ",
+    condition: "Good",
+    serialNumber: "PF-3YJEKR",
+    acquisitionDate: "2026-06-01",
+    specs: { cpu: "Intel i7", ram: "16GB", storage: "512GB SSD", os: "Windows 11 Pro" },
+    history: [{ timestamp: new Date().toISOString(), typeKey: "history_type_created", descKey: "history_added", params: {} }]
+  },
+  {
+    id: "smm2380",
+    name: "Lenovo ThinkPad T14",
+    category: "Laptop",
+    status: "Owned",
+    owner: "Alex Rivera",
+    location: "IT Storage",
+    condition: "New",
+    serialNumber: "PF-4ZKLMN",
+    acquisitionDate: "2026-06-15",
+    specs: { cpu: "Intel i5", ram: "16GB", storage: "256GB SSD", os: "Windows 11 Pro" },
+    history: [{ timestamp: new Date().toISOString(), typeKey: "history_type_created", descKey: "history_added", params: {} }]
+  },
+  {
+    id: "LAP-TEST-101",
+    name: "MacBook Pro M3",
+    category: "Laptop",
+    status: "Open",
+    owner: "",
+    location: "Main HQ",
+    condition: "New",
+    serialNumber: "SN-M3-101",
+    acquisitionDate: "2026-06-01",
+    specs: { cpu: "M3 Pro", ram: "18GB", storage: "512GB SSD", os: "macOS Sonoma" },
+    history: [{ timestamp: new Date().toISOString(), typeKey: "history_type_created", descKey: "history_added", params: {} }]
+  },
+  {
+    id: "LAP-TEST-102",
+    name: "Dell Precision 5570",
+    category: "Laptop",
+    status: "Owned",
+    owner: "Alex Rivera",
+    location: "Remote",
+    condition: "Excellent",
+    serialNumber: "SN-DELL-102",
+    acquisitionDate: "2026-05-15",
+    specs: { cpu: "Intel i9", ram: "32GB", storage: "1TB SSD", os: "Windows 11" },
+    history: [{ timestamp: new Date().toISOString(), typeKey: "history_type_created", descKey: "history_added", params: {} }]
+  },
+  {
+    id: "LAP-TEST-103",
+    name: "ThinkPad Z13",
+    category: "Laptop",
+    status: "Open",
+    owner: "",
+    location: "IT Room",
+    condition: "Good",
+    serialNumber: "SN-LEN-103",
+    acquisitionDate: "2026-04-20",
+    specs: { cpu: "AMD Ryzen 7", ram: "16GB", storage: "512GB SSD", os: "Windows 11 Pro" },
+    history: [{ timestamp: new Date().toISOString(), typeKey: "history_type_created", descKey: "history_added", params: {} }]
+  },
+  {
+    id: "LAP-TEST-104",
+    name: "Surface Laptop Studio",
+    category: "Laptop",
+    status: "Not Working",
+    owner: "Sarah Chen",
+    location: "Repair Shelf",
+    condition: "Keyboard Issue",
+    serialNumber: "SN-MS-104",
+    acquisitionDate: "2026-01-10",
+    specs: { cpu: "Intel i7", ram: "16GB", storage: "256GB SSD", os: "Windows 11" },
+    history: [{ timestamp: new Date().toISOString(), typeKey: "history_type_created", descKey: "history_added", params: {} }]
+  },
+  {
+    id: "LAP-TEST-105",
+    name: "Asus Zenbook Duo",
+    category: "Laptop",
+    status: "Owned",
+    owner: "Mark Wilson",
+    location: "London Office",
+    condition: "New",
+    serialNumber: "SN-ASUS-105",
+    acquisitionDate: "2026-06-10",
+    specs: { cpu: "Intel i7", ram: "16GB", storage: "1TB SSD", os: "Windows 11" },
+    history: [{ timestamp: new Date().toISOString(), typeKey: "history_type_created", descKey: "history_added", params: {} }]
+  },
+  {
+    id: "LAP-TEST-106",
+    name: "Framework Laptop 13",
+    category: "Laptop",
+    status: "Open",
+    owner: "",
+    location: "IT Storage",
+    condition: "Good",
+    serialNumber: "SN-FW-106",
+    acquisitionDate: "2026-03-05",
+    specs: { cpu: "Intel i5", ram: "16GB", storage: "512GB SSD", os: "Linux Mint" },
+    history: [{ timestamp: new Date().toISOString(), typeKey: "history_type_created", descKey: "history_added", params: {} }]
+  },
+  {
+    id: "PRJ-101",
+    name: "Epson Pro EX11000",
+    category: "Projector",
+    status: "Open",
+    owner: "",
+    location: "Conference Room A",
+    condition: "New",
+    serialNumber: "SN-EPSON-201",
+    acquisitionDate: "2026-06-01",
+    specs: { resolution: "4K UHD", brightness: "4600 lumens", inputs: "HDMI, USB-C" },
+    history: [{ timestamp: new Date().toISOString(), typeKey: "history_type_created", descKey: "history_added", params: {} }]
+  },
+  {
+    id: "PRT-301",
+    name: "HP LaserJet Pro M404dn",
+    category: "Printer",
+    status: "Open",
+    owner: "",
+    location: "Reception desk",
+    condition: "Good",
+    serialNumber: "SN-HP-301",
+    acquisitionDate: "2026-05-10",
+    specs: { technology: "Laser", speed: "40 ppm", type: "Monochrome" },
+    history: [{ timestamp: new Date().toISOString(), typeKey: "history_type_created", descKey: "history_added", params: {} }]
+  },
+  {
+    id: "MIX-401",
+    name: "Yamaha MG12XU 12-Input",
+    category: "Mixing Console",
+    status: "Owned",
+    owner: "Alex Rivera",
+    location: "Auditorium",
+    condition: "Excellent",
+    serialNumber: "SN-YAMAHA-401",
+    acquisitionDate: "2026-04-15",
+    specs: { channels: "12", effects: "SPX suite", connectivity: "USB" },
+    history: [{ timestamp: new Date().toISOString(), typeKey: "history_type_created", descKey: "history_added", params: {} }]
+  },
+  {
+    id: "CART-501",
+    name: "Luxor 3-Shelf Utility Cart",
+    category: "AV Cart",
+    status: "Open",
+    owner: "",
+    location: "Media Center",
+    condition: "Fair",
+    serialNumber: "SN-LUXOR-501",
+    acquisitionDate: "2026-02-28",
+    specs: { weight_capacity: "400 lbs", shelves: "3", material: "Polyethylene" },
+    history: [{ timestamp: new Date().toISOString(), typeKey: "history_type_created", descKey: "history_added", params: {} }]
+  }
+];
+
+  </script>
+  <script>
+    // Embedded translations.js translation dictionary
+const translations = {
+    en: {
+        // General
+        brand_name: "AssetGuard",
+        tagline: "Asset Management Assistant",
+        search_placeholder: "Search assets (ID, Model, Owner)...",
+        location: "Location",
+        serial_number: "Serial Number",
+        specs: "Specs",
+        name: "Name",
+        model_name: "Model Name",
+        condition_details: "Condition Details",
+        device_camera: "Device Camera",
+        
+        // Navigation / Controls
+        add_asset: "Add Asset",
+        scan_qr: "Scan QR Code",
+        history_title: "Audit History",
+        
+        // Metrics
+        total_assets: "Total Assets",
+        open_assets: "Open",
+        owned_assets: "Owned",
+        not_working_assets: "Not Working",
+        
+        // Asset Table / Details
+        asset_id: "Asset ID",
+        model: "Model",
+        category: "Category",
+        status: "Status",
+        owner: "Owner",
+        condition: "Condition",
+        last_updated: "Last Updated",
+        actions: "Actions",
+        details: "Details",
+        view_details: "View Details",
+        
+        // Categories
+        all_categories: "All Categories",
+        laptop: "Laptop",
+        tablet: "Tablet",
+        monitor: "Monitor",
+        desktop: "Desktop",
+        peripheral: "Peripheral",
+        phone: "Phone",
+        computer: "Computer",
+        more_categories: "More Categories...",
+        projector: "Projector",
+        digital_signage: "Digital Signage",
+        printer: "Printer",
+        charger: "Charger",
+        av_cart: "AV Cart",
+        mixing_console: "Mixing Console",
+        microphone: "Microphone",
+        receiver: "Receiver",
+        laptop_storage_cart: "Laptop Storage Cart",
+        scanner: "Scanner",
+        video_conferencing_kit: "Video Conferencing Kit",
+        jamboard: "Jamboard",
+        speakermic: "Speakermic",
+        drive_external: "External Drive",
+        camera: "Camera",
+        projection_screen: "Projection Screen",
+        sensor: "Sensor",
+        speaker: "Speaker",
+        mobile_hotspot: "Mobile Hotspot",
+        transducer: "Transducer",
+        ups: "UPS",
+        time_clock: "Time Clock",
+        pos_devices: "POS Devices",
+        security_key: "Security Key",
+        operating_system: "Operating System",
+        software: "Software",
+        other: "Other",
+        
+        // Statuses
+        status_open: "Open",
+        status_owned: "Owned",
+        status_not_working: "Not Working",
+        
+        // Conditions
+        cond_new: "New",
+        cond_good: "Good",
+        cond_fair: "Fair",
+        cond_poor: "Poor",
+        
+        // History Keys
+        history_added: "Asset added to system.",
+        history_updated: "Asset details updated.",
+        history_status_change: "Status changed to {status}.",
+        history_owner_change: "Owner changed to {owner}.",
+        history_assigned: "Assigned to {owner}.",
+        history_unassigned: "Asset unassigned.",
+        history_condition_change: "Condition updated to {condition}.",
+        history_checked_out: "Checked out by {owner}. Condition: {condition}",
+        history_checked_in: "Returned to inventory. Condition: {condition}. {note}",
+        history_transferred: "Asset transferred from {oldOwner} to {newOwner}. Condition: {condition}",
+        history_type_created: "Created",
+        history_type_assignment: "Assignment",
+        history_type_status: "Status Change",
+        history_type_checkout: "Checkout",
+        history_type_checkin: "Check-in",
+        history_type_transfer: "Transfer",
+        
+        // Modals
+        modal_edit_title: "Edit Asset",
+        modal_scan_title: "QR Scanner",
+        global_history_title: "Global Audit Log",
+        history_search_placeholder: "Search logs (ID, Model, Owner)...",
+        filter_category: "Filter by Category",
+        filter_year: "Filter by Year",
+        all_years: "All Years",
+        backup_data: "Download Backup (.json)",
+        magic_setup: "Magic Setup",
+        magic_setup_desc: "Paste your Atlassian Assets URL here to auto-fill IDs",
+        atlassian_connection: "Atlassian Connection",
+        showing_results: "Showing {count} of {total} results",
+        people: "People",
+        user_profile: "User Profile",
+        return_all: "Return All Assets",
+        no_assets_owned: "This user currently owns no assets.",
+        confirm_bulk_return: "Are you sure you want to return all {count} assets for {user} to inventory?",
+        search_people_placeholder: "Search people by name...",
+        next_maintenance: "Next Maintenance",
+        maintenance_due: "Maintenance Due",
+        log_maintenance: "Log Maintenance",
+        history_maintenance: "Maintenance check performed. Device is healthy.",
+        save_changes: "Save Changes",
+        cancel: "Cancel",
+        register_asset: "Register Asset",
+        print_tag: "Print Tag",
+        cpu: "CPU",
+        ram: "RAM",
+        storage: "Storage",
+        os: "OS",
+        close: "Close",
+        settings: "Settings",
+        atlassian_email: "Atlassian Email",
+        cloud_id: "Atlassian Cloud ID",
+        workspace_id: "Assets Workspace ID",
+        api_token: "API Token",
+        sync_now: "Sync from Atlassian",
+        clear_config: "Clear API Config",
+        notif_sync_success: "Successfully synced {count} assets from Atlassian!",
+        notif_sync_error: "Sync failed: {error}",
+        notif_new_asset_scanned: "New asset detected! Pre-filling form...",
+        conn_status_title: "Connection Status",
+        conn_status_unconfigured: "Unconfigured",
+        conn_status_ready: "Ready",
+        conn_status_connected: "Connected",
+        conn_status_error: "Connection Error",
+        conn_status_syncing: "Syncing...",
+        conn_status_details_unconfigured: "Please complete your connection settings below.",
+        conn_status_details_ready: "Credentials entered. Click 'Sync from Atlassian' to establish connection.",
+        conn_status_details_connected: "Last sync successful on {time}. Synced {count} assets.",
+        conn_status_details_error: "The connection failed during the last sync attempt:",
+        btn_help: "Help",
+        btn_got_it: "Got it!",
+        label_magic_setup: "✨ Magic Setup",
+        modal_guide_title: "App Guide",
+        guide_people_title: "People Directory",
+        guide_people_desc: "See a list of everyone who currently has company equipment and what they are holding.",
+        guide_scan_title: "QR Scanner",
+        guide_scan_desc: "Use your iPad camera to scan the QR tag on any piece of equipment to see its history or check it in/out.",
+        guide_filter_title: "Filters & Search",
+        guide_filter_desc: "Quickly find specific items by typing a name or filtering by category (Laptops, Tablets, etc.).",
+        guide_sync_title: "Atlassian Sync",
+        guide_sync_desc: "Pull your real inventory data directly from Jira Service Management Assets.",
+        help_guide_title: "Setup Guide",
+        help_step_1: "Go to your Jira Assets page and copy the URL.",
+        help_step_2: "Paste it into the 'Magic Setup' box below to extract your Workspace ID.",
+        help_step_3: "How to find your Cloud ID: Open a new browser tab, go to 'https://YOUR-SITE.atlassian.net/metadata/properties/id', and copy the long 'id' code shown there.",
+        help_step_4: "Get an API Token from your Atlassian Account Settings (Security tab).",
+        help_step_5: "Paste the long Cloud ID and Token in their fields, then click 'Save Changes'.",
+        notif_config_saved: "Settings saved successfully!",
+        sync_loading: "Syncing with Atlassian Cloud...",
+        scanner_manual_hint: "Can't scan? Type the ID below:",
+        
+        // QR Simulator
+        simulate_scan: "Simulate Scan",
+        select_test_asset: "Select a test asset to simulate:",
+        
+        // Notifications
+        notif_saved: "Changes saved successfully!",
+        notif_scan_success: "QR Code scanned: {id}",
+        notif_not_found: "Asset not found.",
+        clear_all_data: "Clear All Data",
+        confirm_clear_all: "Are you sure you want to permanently delete all assets and history? This cannot be undone."
+    },
+    es: {
+        // General
+        brand_name: "AssetGuard",
+        tagline: "Asistente de Gestión de Activos",
+        search_placeholder: "Buscar activos (ID, Modelo, Dueño)...",
+        location: "Ubicación",
+        serial_number: "Número de Serie",
+        specs: "Especificaciones",
+        name: "Nombre",
+        model_name: "Nombre del Modelo",
+        condition_details: "Detalles de Condición",
+        device_camera: "Cámara del Dispositivo",
+        
+        // Navigation / Controls
+        add_asset: "Agregar Activo",
+        scan_qr: "Escanear Código QR",
+        history_title: "Historial de Auditoría",
+        
+        // Metrics
+        total_assets: "Total de Activos",
+        open_assets: "Abiertos",
+        owned_assets: "Asignados",
+        not_working_assets: "No Funcionan",
+        
+        // Asset Table / Details
+        asset_id: "ID de Activo",
+        model: "Modelo",
+        category: "Categoría",
+        status: "Estado",
+        owner: "Propietario",
+        condition: "Condición",
+        last_updated: "Última Actualización",
+        actions: "Acciones",
+        details: "Detalles",
+        view_details: "Ver Detalles",
+        
+        // Categories
+        all_categories: "Todas las Categorías",
+        laptop: "Portátil",
+        tablet: "Tableta",
+        monitor: "Monitor",
+        desktop: "Escritorio",
+        peripheral: "Periférico",
+        phone: "Teléfono",
+        computer: "Computadora",
+        more_categories: "Más Categorías...",
+        projector: "Proyector",
+        digital_signage: "Señalización Digital",
+        printer: "Impresora",
+        charger: "Cargador",
+        av_cart: "Carrito de AV",
+        mixing_console: "Consola de Mezclas",
+        microphone: "Micrófono",
+        receiver: "Receptor",
+        laptop_storage_cart: "Carrito de Carga",
+        scanner: "Escáner",
+        video_conferencing_kit: "Kit de Videoconferencia",
+        jamboard: "Jamboard",
+        speakermic: "Micrófono-Altavoz",
+        drive_external: "Disco Duro Externo",
+        camera: "Cámara",
+        projection_screen: "Pantalla de Proyección",
+        sensor: "Sensor",
+        speaker: "Altavoz",
+        mobile_hotspot: "Punto de Acceso Móvil",
+        transducer: "Transductor",
+        ups: "UPS / SAI",
+        time_clock: "Reloj de Fichaje",
+        pos_devices: "Terminal POS",
+        security_key: "Llave de Seguridad",
+        operating_system: "Sistema Operativo",
+        software: "Software",
+        other: "Otro",
+        
+        // Statuses
+        status_open: "Abierto",
+        status_owned: "Asignado",
+        status_not_working: "No Funciona",
+        
+        // Conditions
+        cond_new: "Nuevo",
+        cond_good: "Bueno",
+        cond_fair: "Regular",
+        cond_poor: "Malo",
+        
+        // History Keys
+        history_added: "Activo agregado al sistema.",
+        history_updated: "Detalles del activo actualizados.",
+        history_status_change: "Estado cambiado a {status}.",
+        history_owner_change: "Propietario cambiado a {owner}.",
+        history_assigned: "Asignado a {owner}.",
+        history_unassigned: "Activo desasignado.",
+        history_condition_change: "Condición actualizada a {condition}.",
+        history_checked_out: "Retirado por {owner}. Condición: {condition}",
+        history_checked_in: "Devuelto al inventario. Condición de devolución: {condition}. {note}",
+        history_transferred: "Activo transferido de {oldOwner} a {newOwner}. Condición: {condition}",
+        history_type_created: "Creado",
+        history_type_assignment: "Asignación",
+        history_type_status: "Cambio de Estado",
+        history_type_checkout: "Retirada",
+        history_type_checkin: "Devolución",
+        history_type_transfer: "Transferencia",
+        
+        // Modals
+        modal_edit_title: "Editar Activo",
+        modal_scan_title: "Escáner QR",
+        global_history_title: "Historial Global de Auditoría",
+        history_search_placeholder: "Buscar registros (ID, Modelo, Dueño)...",
+        filter_category: "Filtrar por Categoría",
+        filter_year: "Filtrar por Año",
+        all_years: "Todos los años",
+        no_results: "No se encontraron activos",
+        no_results_desc: "Intente ajustar su búsqueda o filtros para encontrar lo que busca.",
+        backup_data: "Descargar copia de seguridad (.json)",
+        acquisition_date: "Fecha de Adquisición",
+        showing_results: "Mostrando {count} de {total} resultados",
+        people: "Personas",
+        user_profile: "Perfil de Usuario",
+        return_all: "Devolver todos los activos",
+        no_assets_owned: "Este usuario no tiene activos asignados.",
+        confirm_bulk_return: "¿Estás seguro de que deseas devolver los {count} activos de {user} al inventario?",
+        search_people_placeholder: "Buscar personas por nombre...",
+        next_maintenance: "Próximo Mantenimiento",
+        maintenance_due: "Mantenimiento Vencido",
+        log_maintenance: "Registrar Mantenimiento",
+        history_maintenance: "Mantenimiento realizado. El dispositivo está sano.",
+        save_changes: "Guardar Cambios",
+        cancel: "Cancelar",
+        register_asset: "Registrar Activo",
+        print_tag: "Imprimir Etiqueta",
+        cpu: "CPU",
+        ram: "RAM",
+        storage: "Almacenamiento",
+        os: "SO",
+        close: "Cerrar",
+        settings: "Configuración",
+        magic_setup: "Configuración Mágica",
+        magic_setup_desc: "Pegue su URL de Atlassian Assets aquí para auto-completar los IDs",
+        atlassian_connection: "Conexión Atlassian",
+        atlassian_email: "Correo de Atlassian",
+        cloud_id: "Cloud ID de Atlassian",
+        workspace_id: "ID de Espacio de Trabajo",
+        api_token: "Token de API",
+        sync_now: "Sincronizar ahora",
+        clear_config: "Borrar configuración",
+        notif_sync_success: "¡Sincronizados con éxito {count} activos de Atlassian!",
+        notif_sync_error: "Fallo en la sincronización: {error}",
+        notif_new_asset_scanned: "¡Nuevo activo detectado! Rellenando formulario...",
+        conn_status_title: "Estado de la Conexión",
+        conn_status_unconfigured: "Sin Configurar",
+        conn_status_ready: "Listo",
+        conn_status_connected: "Conectado",
+        conn_status_error: "Error de Conexión",
+        conn_status_syncing: "Sincronizando...",
+        conn_status_details_unconfigured: "Complete los ajustes de conexión a continuación.",
+        conn_status_details_ready: "Credenciales ingresadas. Haga clic en 'Sincronizar ahora' para establecer la conexión.",
+        conn_status_details_connected: "Última sincronización exitosa el {time}. Sincronizados {count} activos.",
+        conn_status_details_error: "La conexión falló durante el último intento de sincronización:",
+        btn_help: "Ayuda",
+        btn_got_it: "¡Entendido!",
+        label_magic_setup: "✨ Configuración Mágica",
+        modal_guide_title: "Guía de la App",
+        guide_people_title: "Directorio de Personas",
+        guide_people_desc: "Mira una lista de todos los que tienen equipo de la empresa y qué tienen en su poder.",
+        guide_scan_title: "Escáner QR",
+        guide_scan_desc: "Usa la cámara de tu iPad para escanear la etiqueta QR de cualquier equipo para ver su historial o registrar entrada/salida.",
+        guide_filter_title: "Filtros y Búsqueda",
+        guide_filter_desc: "Encuentra rápidamente artículos específicos escribiendo un nombre o filtrando por categoría (Laptops, Tablets, etc.).",
+        guide_sync_title: "Sincronización Atlassian",
+        guide_sync_desc: "Obtén tus datos reales de inventario directamente desde Jira Service Management Assets.",
+        help_guide_title: "Guía de Configuración",
+        help_step_1: "Ve a tu página de Jira Assets y copia la URL.",
+        help_step_2: "Pégala en el cuadro de abajo para extraer tu ID de Espacio de Trabajo.",
+        help_step_3: "Cómo encontrar tu Cloud ID: Abre una pestaña de navegador, ve a 'https://TU-SITIO.atlassian.net/metadata/properties/id', y copia el código largo de 'id' que se muestra.",
+        help_step_4: "Obtén un Token de API en los ajustes de tu cuenta de Atlassian (pestaña Seguridad).",
+        help_step_5: "Pega el Cloud ID largo y el Token en sus campos, luego haz clic en 'Guardar Cambios'.",
+        notif_config_saved: "¡Configuración guardada con éxito!",
+        sync_loading: "Sincronizando con Atlassian Cloud...",
+        scanner_manual_hint: "¿No puedes escanear? Escribe el ID abajo:",
+        
+        // QR Simulator
+        simulate_scan: "Simular Escaneo",
+        select_test_asset: "Seleccione un activo para simular:",
+        
+        // Notifications
+        notif_saved: "¡Cambios guardados con éxito!",
+        notif_scan_success: "Código QR escaneado: {id}",
+        notif_not_found: "Activo no encontrado.",
+        clear_all_data: "Borrar todos los datos",
+        confirm_clear_all: "¿Está seguro de que desea eliminar permanentemente todos los activos y el historial? Esto no se puede deshacer."
+    }
+};
+
+  </script>
+  <script>
+    // Embedded app.js main application controller logic
+// Safe defensive Storage wrappers to prevent "SecurityError: Access is denied" under strict local file:/// protocol settings
+const safeStorage = {
+  get(type, key, fallback = "") {
+    try {
+      const val = window[type].getItem(key);
+      return val !== null ? val : fallback;
+    } catch (e) {
+      console.warn(`Storage access blocked for ${type}.${key}, using fallback.`, e);
+      return this._mem[type][key] !== undefined ? this._mem[type][key] : fallback;
+    }
+  },
+  set(type, key, val) {
+    try {
+      window[type].setItem(key, val);
+    } catch (e) {
+      console.warn(`Storage set blocked for ${type}.${key}`, e);
+      this._mem[type][key] = String(val);
+    }
+  },
+  remove(type, key) {
+    try {
+      window[type].removeItem(key);
+    } catch (e) {
+      console.warn(`Storage remove blocked for ${type}.${key}`, e);
+      delete this._mem[type][key];
+    }
+  },
+  _mem: { localStorage: {}, sessionStorage: {} }
+};
+
+function escapeHTML(str) {
+  if (!str) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+let assets = JSON.parse(safeStorage.get("localStorage", "assetGuard_assets")) || [];
+let html5QrScanner = null;
+let activeCategory = "All";
+let activeStatus = "All";
+let searchQuery = "";
+let currentPage = 1;
+let assetsPerPage = 50; // Dynamic client-side layout pagination (default 50 per page!)
+let isScannerStarting = false;
+let shouldStopScanner = false;
+let currentLanguage = safeStorage.get("localStorage", "assetGuard_lang") || "en";
+// Clean up legacy pre-filled parameters from previous sessions
+if (safeStorage.get("localStorage", "assetGuard_cloud_id") === "smm-sandbox") safeStorage.remove("localStorage", "assetGuard_cloud_id");
+if (safeStorage.get("localStorage", "assetGuard_workspace_id") === "3") safeStorage.remove("localStorage", "assetGuard_workspace_id");
+if (safeStorage.get("sessionStorage", "assetGuard_email") === "llee_smm@smm.com") safeStorage.remove("sessionStorage", "assetGuard_email");
+let isOfflineMode = safeStorage.get("localStorage", "assetGuard_offline_mode") === "true";
+
+let apiConfig = {
+  cloudId: safeStorage.get("localStorage", "assetGuard_cloud_id") || "",
+  workspaceId: safeStorage.get("localStorage", "assetGuard_workspace_id") || "",
+  email: safeStorage.get("sessionStorage", "assetGuard_email") || "",
+  token: safeStorage.get("sessionStorage", "assetGuard_token") || "",
+  syncLimit: parseInt(safeStorage.get("localStorage", "assetGuard_sync_limit")) || 100
+};
+let atlassianBaseUrl = safeStorage.get("sessionStorage", "assetGuard_base_url") || "";
+
+// State persistence
+function saveState() {
+  safeStorage.set("localStorage", "assetGuard_assets", JSON.stringify(assets));
+  safeStorage.set("localStorage", "assetGuard_lang", currentLanguage);
+  safeStorage.set("localStorage", "assetGuard_offline_mode", isOfflineMode);
+  
+  // Save non-confidential routing IDs persistently to bypass slow auto-resolution hops
+  safeStorage.set("localStorage", "assetGuard_cloud_id", apiConfig.cloudId);
+  safeStorage.set("localStorage", "assetGuard_workspace_id", apiConfig.workspaceId);
+  safeStorage.set("localStorage", "assetGuard_sync_limit", apiConfig.syncLimit);
+  
+  // Save highly-confidential credentials in temporary session storage
+  safeStorage.set("sessionStorage", "assetGuard_email", apiConfig.email);
+  safeStorage.set("sessionStorage", "assetGuard_token", apiConfig.token);
+}
+
+// Native sessionStorage is already automatically wiped by the browser when the tab or browser is closed.
+// Keeping sessionStorage intact on page refreshes ensures a smooth user experience!
+
+// Initialize Application
+document.addEventListener("DOMContentLoaded", () => {
+  // Initialize Data from LocalStorage or start empty
+  const savedAssets = safeStorage.get("localStorage", "assetGuard_assets");
+  const seeds = window.itAssetSeeds || [];
+  
+  if (savedAssets) {
+    try {
+      assets = JSON.parse(savedAssets);
+      // Filter out any mock seed devices to get rid of the fake devices permanently
+      const seedIds = seeds.map(s => (s.id || "").toLowerCase());
+      assets = assets.filter(a => !seedIds.includes((a.id || "").toLowerCase()));
+      saveState();
+    } catch (e) {
+      console.error("Failed to parse local storage assets, resetting.", e);
+      assets = [];
+      saveState();
+    }
+  } else {
+    // Start with a completely clean database
+    assets = [];
+    saveState();
+  }
+
+  // Initial Render
+  updateMetrics();
+  renderAssetList();
+  applyTranslations(currentLanguage);
+  setupEventListeners();
+  toggleOfflineUI(isOfflineMode);
+});
+// Atlassian Connection Status Dashboard and Auto-Resolution Helpers
+function isValidUUID(str) {
+  if (!str) return false;
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  return uuidRegex.test(str.trim());
+}
+
+// Parse smart QR codes containing JSON, URL query parameters, Atlassian URLs, pure numbers, or raw ID strings
+function parseScannedContent(text) {
+  const result = {
+    id: "",
+    name: "",
+    category: "Laptop",
+    serial: "",
+    location: "",
+    condition: "Healthy",
+    cpu: "",
+    ram: "",
+    storage: "",
+    os: ""
+  };
+
+  const trimmed = text.trim();
+  if (!trimmed) return result;
+
+
+
+  // 1. Try JSON
+  try {
+    if (trimmed.startsWith("{") && trimmed.endsWith("}")) {
+      const data = JSON.parse(trimmed);
+      if (data.id) result.id = String(data.id);
+      if (data.name) result.name = String(data.name);
+      if (data.category) result.category = String(data.category);
+      if (data.serial) result.serial = String(data.serial);
+      if (data.serialNumber) result.serial = String(data.serialNumber);
+      if (data.location) result.location = String(data.location);
+      if (data.condition) result.condition = String(data.condition);
+      
+      if (data.specs) {
+        if (data.specs.cpu) result.cpu = String(data.specs.cpu);
+        if (data.specs.ram) result.ram = String(data.specs.ram);
+        if (data.specs.storage) result.storage = String(data.specs.storage);
+        if (data.specs.os) result.os = String(data.specs.os);
+      } else {
+        if (data.cpu) result.cpu = String(data.cpu);
+        if (data.ram) result.ram = String(data.ram);
+        if (data.storage) result.storage = String(data.storage);
+        if (data.os) result.os = String(data.os);
+      }
+      return result;
+    }
+  } catch (e) {
+    console.log("QR parse: Not a JSON string", e);
+  }
+
+  // 1.5. Special check: Try to extract Atlassian Assets IDs if it contains .atlassian.net
+  if (trimmed.includes(".atlassian.net")) {
+    try {
+      const urlObj = new URL(trimmed);
+      const objId = urlObj.searchParams.get("objectId") || urlObj.searchParams.get("selectedObjectId");
+      if (objId) {
+        result.id = "smm" + objId;
+        result.serial = trimmed;
+        return result;
+      }
+    } catch (e) {
+      console.log("QR parse: Atlassian URL parser error", e);
+    }
+  }
+
+  // 2. Try URL query parameters
+  if (trimmed.includes("=") || trimmed.includes("&")) {
+    try {
+      let queryStr = trimmed;
+      if (trimmed.includes("?")) {
+        queryStr = trimmed.split("?")[1];
+      }
+      const params = new URLSearchParams(queryStr);
+      
+      let matchedAny = false;
+      if (params.has("id")) { result.id = params.get("id"); matchedAny = true; }
+      if (params.has("name")) { result.name = params.get("name"); matchedAny = true; }
+      if (params.has("category")) { result.category = params.get("category"); matchedAny = true; }
+      if (params.has("serial")) { result.serial = params.get("serial"); matchedAny = true; }
+      if (params.has("serialNumber")) { result.serial = params.get("serialNumber"); matchedAny = true; }
+      if (params.has("location")) { result.location = params.get("location"); matchedAny = true; }
+      if (params.has("condition")) { result.condition = params.get("condition"); matchedAny = true; }
+      if (params.has("cpu")) { result.cpu = params.get("cpu"); matchedAny = true; }
+      if (params.has("ram")) { result.ram = params.get("ram"); matchedAny = true; }
+      if (params.has("storage")) { result.storage = params.get("storage"); matchedAny = true; }
+      if (params.has("os")) { result.os = params.get("os"); matchedAny = true; }
+      
+      if (matchedAny && result.id) {
+        return result;
+      }
+    } catch (e) {
+      console.log("QR parse: Not query parameters", e);
+    }
+  }
+
+  // 3. Try to sniff if the text is an Atlassian Assets or generic URL containing a numeric ID
+  if (trimmed.startsWith("http://") || trimmed.startsWith("https://") || trimmed.includes(".atlassian.net") || trimmed.includes("/assets/") || trimmed.includes("/object/")) {
+    try {
+      // Match patterns like /object/1234, /objects/1234, /assets/1234, /asset/1234 or a trailing /1234
+      const objectMatch = trimmed.match(/\/object(?:s)?\/([0-9]+)/i);
+      const assetsMatch = trimmed.match(/\/asset(?:s)?\/([0-9]+)/i);
+      const trailingMatch = trimmed.match(/\/([0-9]+)(?:[?#]|$)/);
+
+      let numericId = "";
+      if (objectMatch) {
+        numericId = objectMatch[1];
+      } else if (assetsMatch) {
+        numericId = assetsMatch[1];
+      } else if (trailingMatch) {
+        numericId = trailingMatch[1];
+      }
+
+      if (numericId) {
+        result.id = "smm" + numericId;
+        result.serial = trimmed; // Keep full URL as fallback serial
+        return result;
+      }
+    } catch (e) {
+      console.log("QR parse: Atlassian ID sniffer exception", e);
+    }
+  }
+
+  // 4. Try to parse if it is a pure numeric ID (the digits next to the QR code, e.g. "1024" or "0421")
+  if (/^[0-9]+$/.test(trimmed) && trimmed.length > 0) {
+    result.id = "smm" + trimmed;
+    result.serial = trimmed;
+    return result;
+  }
+
+  // 5. Try to parse "M" prefixed tags (e.g. "M2379" -> "smm2379")
+  if (trimmed.toLowerCase().startsWith("m") && /^[0-9]+$/.test(trimmed.substring(1))) {
+    result.id = "smm" + trimmed.substring(1);
+    result.serial = trimmed;
+    return result;
+  }
+
+  // 6. Generic plain barcode/raw ID fallback
+  result.id = trimmed;
+  if (trimmed.length > 5) {
+    result.serial = trimmed;
+  }
+  return result;
+}
+
+// Prefills the Add Asset form inputs with a parsed content object
+function prefillAddAssetForm(parsed) {
+  let normalizedId = parsed.id.trim().toUpperCase();
+  if (normalizedId.startsWith("M") && normalizedId.length > 2) {
+    normalizedId = "SMM" + normalizedId.substring(1);
+  }
+
+  document.getElementById("add-id").value = normalizedId;
+  document.getElementById("add-name").value = parsed.name || "";
+  document.getElementById("add-category").value = parsed.category || "Laptop";
+  document.getElementById("add-serial").value = parsed.serial || "";
+  document.getElementById("add-location").value = parsed.location || "";
+  document.getElementById("add-condition").value = parsed.condition || "Healthy";
+  document.getElementById("add-spec-cpu").value = parsed.cpu || "";
+  document.getElementById("add-spec-ram").value = parsed.ram || "";
+  document.getElementById("add-spec-storage").value = parsed.storage || "";
+  document.getElementById("add-spec-os").value = parsed.os || "";
+}
+
+function updateConnectionUI(status, detailsMsg = "") {
+  const card = document.getElementById("connection-status-card");
+  const badge = document.getElementById("connection-status-badge");
+  const details = document.getElementById("connection-status-details");
+
+  if (!card || !badge || !details) return;
+
+  // Clear previous state classes
+  card.className = "connection-status-card " + status;
+  badge.className = "connection-badge status-" + status;
+
+  // Set translation/text
+  if (status === "offline") {
+    badge.textContent = "Offline Mode";
+  } else {
+    badge.textContent = t("conn_status_" + status);
+  }
+
+  // Persistence of connection state
+  if (status !== "syncing" && status !== "offline") {
+    safeStorage.set("localStorage", "assetGuard_last_sync_status", status);
+    if (status === "connected") {
+      const timeStr = new Date().toLocaleString();
+      safeStorage.set("localStorage", "assetGuard_last_sync_time", timeStr);
+      safeStorage.set("localStorage", "assetGuard_last_sync_error", "");
+    } else if (status === "error") {
+      safeStorage.set("localStorage", "assetGuard_last_sync_error", detailsMsg);
+    }
+  }
+
+  // Set details content
+  if (status === "offline") {
+    details.innerHTML = `
+      <span style="color: var(--accent-purple); font-weight: 600; display: flex; align-items: center; gap: 6px;">
+        <i class="fa-solid fa-plane-slash"></i> Offline Sandbox Mode Active
+      </span>
+      <p style="margin-top: 4px; font-size: 11.5px; color: var(--text-secondary); line-height: 1.4;">
+        The system is running purely in local-storage mode. Live synchronization with Atlassian is disabled, and changes are confined to your browser database.
+      </p>
+    `;
+  } else if (status === "unconfigured") {
+    details.innerHTML = `<span>${t("conn_status_details_unconfigured")}</span>`;
+  } else if (status === "ready") {
+    details.innerHTML = `<span>${t("conn_status_details_ready")}</span>`;
+  } else if (status === "syncing") {
+    details.innerHTML = `<span style="display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-spinner fa-spin"></i> ${detailsMsg || t("sync_loading")}</span>`;
+  } else if (status === "connected") {
+    const count = safeStorage.get("localStorage", "assetGuard_last_sync_count") || "0";
+    const time = safeStorage.get("localStorage", "assetGuard_last_sync_time") || new Date().toLocaleString();
+    details.innerHTML = `<span>${t("conn_status_details_connected", { time, count })}</span>`;
+  } else if (status === "error") {
+    const isFailedToFetch = detailsMsg.toLowerCase().includes("failed to fetch");
+    if (isFailedToFetch) {
+      details.innerHTML = `
+        <span style="color: var(--status-error); font-weight: 600; display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-triangle-exclamation"></i> Browser CORS Block Detected</span>
+        <p style="margin-top: 4px; font-size: 12px; color: var(--text-secondary);">
+          Atlassian Cloud APIs restrict web browsers from making direct requests from external origins (CORS security).
+        </p>
+        
+        <div style="margin-top: 12px; background: var(--bg-body); border: 1px solid var(--border-color); border-radius: 6px; padding: 12px; display: flex; flex-direction: column; gap: 10px;">
+          <div style="font-weight: 600; font-size: 12px; color: var(--text-primary); border-bottom: 1px solid var(--border-color); padding-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+            <i class="fa-solid fa-lightbulb" style="color: #FFC400;"></i> How to bypass this:
+          </div>
+          
+          <div style="font-size: 11.5px; line-height: 1.4; color: var(--text-secondary);">
+            <strong style="color: var(--text-primary);">Option A (Easiest - 10 seconds):</strong> Install a CORS Bypass browser extension:
+            <ul style="margin: 6px 0 0 16px; padding: 0; list-style-type: disc;">
+              <li>Search & install the extension: <strong>"Allow CORS: Access-Control-Allow-Origin"</strong> for Chrome/Firefox/Edge.</li>
+              <li>Turn the extension <strong>ON</strong> (extension icon turns green).</li>
+              <li>Click <strong>Sync from Atlassian</strong> again!</li>
+            </ul>
+          </div>
+          
+          <div style="font-size: 11.5px; line-height: 1.4; color: var(--text-secondary); border-top: 1px solid var(--border-color); padding-top: 8px;">
+            <strong style="color: var(--text-primary);">Option B (Manual Inputs):</strong> Find your real UUIDs manually to bypass auto-resolution:
+            <ol style="margin: 6px 0 0 16px; padding: 0; list-style-type: decimal;">
+              <li>Open your Jira Assets web page in your browser.</li>
+              <li>Press <strong>F12</strong> (Developer Tools), go to the <strong>Network</strong> tab.</li>
+              <li>Search for <strong>"aql"</strong> or <strong>"workspace"</strong>, and click any completed request.</li>
+              <li>Copy the UUIDs from the request URL:
+                <ul style="margin-top: 2px; padding-left: 12px; list-style-type: circle;">
+                  <li><strong>Workspace ID</strong> is the long UUID after <code style="font-family: monospace; color: var(--accent-blue);">/workspace/</code></li>
+                  <li><strong>Cloud ID</strong> is the long UUID after <code style="font-family: monospace; color: var(--accent-blue);">/ex/jira/</code></li>
+                </ul>
+              </li>
+              <li>Enter those UUIDs directly into the fields below to bypass auto-resolution!</li>
+            </ol>
+          </div>
+        </div>
+        
+        <div class="error-details-block" style="margin-top: 10px;">Original System Error: ${escapeHTML(detailsMsg)}</div>
+      `;
+    } else {
+      details.innerHTML = `
+        <span>${t("conn_status_details_error")}</span>
+        <div class="error-details-block">${escapeHTML(detailsMsg)}</div>
+      `;
+    }
+  }
+}
+
+function toggleOfflineUI(isOffline) {
+  const container = document.getElementById("atlassian-fields-container");
+  const syncBtn = document.getElementById("sync-atlassian-btn");
+  
+  const cloudIdInput = document.getElementById("api-cloud-id");
+  const workspaceIdInput = document.getElementById("api-workspace-id");
+  const emailInput = document.getElementById("api-email");
+  const tokenInput = document.getElementById("api-token");
+  
+  if (cloudIdInput && workspaceIdInput && emailInput && tokenInput) {
+    if (isOffline) {
+      cloudIdInput.removeAttribute("required");
+      workspaceIdInput.removeAttribute("required");
+      emailInput.removeAttribute("required");
+      tokenInput.removeAttribute("required");
+    } else {
+      cloudIdInput.setAttribute("required", "");
+      workspaceIdInput.setAttribute("required", "");
+      emailInput.setAttribute("required", "");
+      tokenInput.setAttribute("required", "");
+    }
+  }
+
+  if (container) {
+    if (isOffline) {
+      container.classList.add("disabled-fade");
+      const inputs = container.querySelectorAll("input, select, button");
+      inputs.forEach(i => i.disabled = true);
+    } else {
+      container.classList.remove("disabled-fade");
+      const inputs = container.querySelectorAll("input, select, button");
+      inputs.forEach(i => {
+        i.disabled = false;
+      });
+    }
+  }
+
+  if (syncBtn) {
+    if (isOffline) {
+      syncBtn.classList.add("disabled-fade");
+      syncBtn.disabled = true;
+    } else {
+      syncBtn.classList.remove("disabled-fade");
+      syncBtn.disabled = false;
+    }
+  }
+
+  // Update Status Dashboard representation
+  if (isOffline) {
+    updateConnectionUI("offline");
+  } else {
+    // Restore normal representation
+    if (!apiConfig.cloudId || !apiConfig.workspaceId || !apiConfig.email || !apiConfig.token) {
+      updateConnectionUI("unconfigured");
+    } else {
+      const lastStatus = safeStorage.get("localStorage", "assetGuard_last_sync_status") || "ready";
+      const lastError = safeStorage.get("localStorage", "assetGuard_last_sync_error") || "";
+      updateConnectionUI(lastStatus, lastError);
+    }
+  }
+}
+
+
+async function resolveCloudId(subdomain) {
+  const emailVal = (document.getElementById("api-email")?.value || "").trim() || apiConfig.email;
+  const tokenVal = (document.getElementById("api-token")?.value || "").trim() || apiConfig.token;
+  
+  const headers = {};
+  if (emailVal && tokenVal) {
+    headers["Authorization"] = `Basic ${btoa(`${emailVal}:${tokenVal}`)}`;
+  }
+  headers["Accept"] = "application/json";
+
+  const tenantInfoUrl = `https://${subdomain}.atlassian.net/_edge/tenant_info`;
+  const serverInfoUrl = `https://${subdomain}.atlassian.net/rest/api/3/serverInfo`;
+  const metadataUrl = `https://${subdomain}.atlassian.net/metadata/properties/id`;
+
+  const urlsToTry = [tenantInfoUrl, serverInfoUrl, metadataUrl];
+
+  for (const url of urlsToTry) {
+    try {
+      const res = await fetch(url, { headers });
+      if (res.ok) {
+        const data = await res.json();
+        if (data) {
+          if (data.cloudId) {
+            console.log("Resolved Cloud ID from tenant_info successfully!");
+            return data.cloudId;
+          }
+          if (data.baseUrl && data.baseUrl.includes("/ex/jira/")) {
+            const match = data.baseUrl.match(/\/ex\/jira\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/i);
+            if (match) {
+              console.log("Resolved Cloud ID from serverInfo successfully!");
+              return match[1];
+            }
+          }
+          if (data.id) {
+            console.log("Resolved Cloud ID from metadata successfully!");
+            return data.id;
+          }
+        }
+      }
+    } catch (e) {
+      console.warn(`Direct fetch to ${url} failed (likely CORS), trying proxy fallback...`, e);
+      try {
+        let parsed = null;
+        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+        const proxyRes = await fetch(proxyUrl);
+        if (proxyRes.ok) {
+          const proxyData = await proxyRes.json();
+          if (proxyData && proxyData.contents) {
+            parsed = JSON.parse(proxyData.contents);
+          }
+        }
+
+        if (parsed) {
+          if (parsed.cloudId) {
+            console.log("Resolved Cloud ID via proxy from tenant_info successfully!");
+            return parsed.cloudId;
+          }
+          if (parsed.baseUrl && parsed.baseUrl.includes("/ex/jira/")) {
+            const match = parsed.baseUrl.match(/\/ex\/jira\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/i);
+            if (match) {
+              console.log("Resolved Cloud ID via proxy from serverInfo successfully!");
+              return match[1];
+            }
+          }
+          if (parsed.id) {
+            console.log("Resolved Cloud ID via proxy from metadata successfully!");
+            return parsed.id;
+          }
+        }
+      } catch (proxyError) {
+        console.error(`Proxy fetch to ${url} also failed:`, proxyError);
+      }
+    }
+  }
+  return null;
+}
+
+async function resolveWorkspaceId(cloudId, originalSubdomain) {
+  const auth = btoa(`${apiConfig.email}:${apiConfig.token}`);
+  const headers = {
+    "Authorization": `Basic ${auth}`,
+    "Accept": "application/json"
+  };
+
+  const urls = [];
+  if (originalSubdomain) {
+    urls.push(`https://${originalSubdomain}.atlassian.net/rest/servicedeskapi/assets/workspace`);
+  }
+  if (cloudId && cloudId.includes("-")) {
+    urls.push(`https://api.atlassian.com/ex/jira/${cloudId}/rest/servicedeskapi/assets/workspace`);
+  }
+  
+  // Backups
+  if (originalSubdomain) {
+    urls.push(`https://${originalSubdomain}.atlassian.net/rest/servicedeskapi/insight/workspace`);
+  }
+  if (cloudId && cloudId.includes("-")) {
+    urls.push(`https://api.atlassian.com/ex/jira/${cloudId}/rest/servicedeskapi/insight/workspace`);
+  }
+
+  let resolvedId = null;
+  let lastError = null;
+
+  for (const url of urls) {
+    try {
+      console.log("Attempting to resolve Workspace ID from:", url);
+      let res;
+      try {
+        res = await fetch(url, { method: "GET", headers });
+      } catch (fetchErr) {
+        console.warn(`Direct fetch to ${url} failed, attempting proxy fallback...`, fetchErr);
+        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+        const proxyRes = await fetch(proxyUrl);
+        if (proxyRes.ok) {
+          const proxyData = await proxyRes.json();
+          if (proxyData && proxyData.contents) {
+            const contentsText = proxyData.contents;
+            res = {
+              ok: true,
+              status: 200,
+              json: async () => JSON.parse(contentsText),
+              text: async () => contentsText
+            };
+          }
+        }
+        if (!res) throw fetchErr; // Fall through to catch if proxy resolution failed entirely
+      }
+
+      if (res && res.ok) {
+        const data = await res.json();
+        if (data && data.values && data.values.length > 0 && data.values[0].workspaceId) {
+          resolvedId = data.values[0].workspaceId;
+          break;
+        }
+      } else if (res) {
+        const txt = await res.text();
+        lastError = new Error(`HTTP ${res.status}: ${txt || res.statusText}`);
+      }
+    } catch (e) {
+      lastError = e;
+    }
+  }
+
+  if (resolvedId) {
+    return resolvedId;
+  } else {
+    throw lastError || new Error("Workspace ID could not be found in response.");
+  }
+}
+
+// Background Sync: Create object in Atlassian JSM Assets
+async function pushNewAssetToAtlassian(asset) {
+  if (isOfflineMode) {
+    console.log("Atlassian Push (Create) bypassed: Active Offline Mode.");
+    return;
+  }
+  if (!apiConfig.email || !apiConfig.token || !atlassianBaseUrl) {
+    console.log("Atlassian Push (Create) bypassed: Missing configuration or base URL.");
+    return;
+  }
+
+  const auth = btoa(`${apiConfig.email}:${apiConfig.token}`);
+  const headers = {
+    "Authorization": `Basic ${auth}`,
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "X-ExperimentalApi": "opt-in"
+  };
+
+  const objectTypeId = safeStorage.get("localStorage", "assetGuard_detected_object_type_id") || "2";
+  const attrMap = JSON.parse(safeStorage.get("localStorage", "assetGuard_attribute_map")) || {};
+
+  const attributes = [];
+  const addAttr = (name, val) => {
+    const attrId = attrMap[name.toLowerCase()];
+    if (attrId && val) {
+      attributes.push({
+        objectTypeAttributeId: attrId,
+        objectAttributeValues: [{ value: String(val) }]
+      });
+    }
+  };
+
+  // Map fields dynamically based on synced schema mapping
+  addAttr("Model", asset.name);
+  addAttr("Category", asset.category);
+  addAttr("Status", asset.status);
+  addAttr("Owner", asset.owner);
+  addAttr("Serial Number", asset.serialNumber || asset.serial);
+  addAttr("Serial", asset.serialNumber || asset.serial);
+  addAttr("Location", asset.location);
+  
+  if (asset.specs) {
+    addAttr("CPU", asset.specs.cpu);
+    addAttr("RAM", asset.specs.ram);
+    addAttr("Storage", asset.specs.storage);
+    addAttr("OS", asset.specs.os);
+  }
+
+  const payload = {
+    objectTypeId,
+    attributes
+  };
+
+  try {
+    console.log("Pushing new asset to Atlassian:", payload);
+    const res = await fetch(`${atlassianBaseUrl}/object`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify(payload)
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.id) {
+        console.log("Successfully created remote asset in Atlassian! ID:", data.id);
+        asset.atlassianObjectId = data.id;
+        saveState();
+        showToast("Asset pushed to Atlassian Cloud!", "success");
+      }
+    } else {
+      const txt = await res.text();
+      console.warn("Atlassian POST failed:", txt);
+    }
+  } catch (err) {
+    console.error("Atlassian POST network error:", err);
+  }
+}
+
+// Background Sync: Update object in Atlassian JSM Assets
+async function pushUpdateToAtlassian(asset) {
+  if (isOfflineMode) {
+    console.log("Atlassian Push (Update) bypassed: Active Offline Mode.");
+    return;
+  }
+  if (!apiConfig.email || !apiConfig.token || !atlassianBaseUrl || !asset.atlassianObjectId) {
+    console.log("Atlassian Push (Update) bypassed: Missing configuration, base URL, or remote ID.");
+    return;
+  }
+
+  const auth = btoa(`${apiConfig.email}:${apiConfig.token}`);
+  const headers = {
+    "Authorization": `Basic ${auth}`,
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "X-ExperimentalApi": "opt-in"
+  };
+
+  const attrMap = JSON.parse(safeStorage.get("localStorage", "assetGuard_attribute_map")) || {};
+
+  const attributes = [];
+  const addAttr = (name, val) => {
+    const attrId = attrMap[name.toLowerCase()];
+    if (attrId) {
+      attributes.push({
+        objectTypeAttributeId: attrId,
+        objectAttributeValues: [{ value: String(val || "") }]
+      });
+    }
+  };
+
+  // Map the updateable fields
+  addAttr("Status", asset.status);
+  addAttr("Owner", asset.owner);
+  addAttr("Location", asset.location);
+
+  const payload = {
+    attributes
+  };
+
+  try {
+    console.log(`Pushing updates to Atlassian for asset ${asset.atlassianObjectId}:`, payload);
+    const res = await fetch(`${atlassianBaseUrl}/object/${asset.atlassianObjectId}`, {
+      method: "PUT",
+      headers,
+      body: JSON.stringify(payload)
+    });
+
+    if (res.ok) {
+      console.log("Successfully updated remote asset in Atlassian!");
+      showToast("Updates pushed to Atlassian Cloud!", "success");
+    } else {
+      const txt = await res.text();
+      console.warn("Atlassian PUT failed:", txt);
+    }
+  } catch (err) {
+    console.error("Atlassian PUT network error:", err);
+  }
+}
+
+// Atlassian API Sync Logic
+async function syncWithAtlassian() {
+  if (isOfflineMode) {
+    showToast("Sync bypassed: Active Offline Mode.", "warning");
+    return;
+  }
+  if (!apiConfig.cloudId || !apiConfig.workspaceId || !apiConfig.email || !apiConfig.token) {
+    showToast(t("notif_sync_error").replace("{error}", "Missing API Config (Cloud ID, Workspace ID, Email, or Token)"), "error");
+    openModal("settings-modal");
+    updateConnectionUI("error", "Missing configuration fields.");
+    return;
+  }
+
+  // Prevent common user copy-paste errors where Cloud ID and Workspace ID are identical UUIDs
+  if (apiConfig.cloudId.trim().toLowerCase() === apiConfig.workspaceId.trim().toLowerCase()) {
+    const errorMsg = "Configuration Error: Your Cloud ID and Workspace ID are identical! They must be different UUIDs. Check Assets URL for Workspace ID.";
+    updateConnectionUI("error", errorMsg);
+    showToast(errorMsg, "error");
+    openModal("settings-modal");
+    return;
+  }
+
+  // Compile the list of all historic type IDs specified by the user to merge all their assets
+  const allTypeIds = [
+    3, 14, 23, 24, 28, 35, 43, 45, 52, 53, 55, 57, 59, 61, 65, 68, 70, 74, 75, 76, 80, 
+    115, 138, 163, 164, 165, 169, 171, 172, 195, 197, 199, 202, 279
+  ];
+  const extractedTypeId = parseInt(safeStorage.get("localStorage", "assetGuard_extracted_type_id")) || null;
+  if (extractedTypeId && !allTypeIds.includes(extractedTypeId)) {
+    allTypeIds.push(extractedTypeId);
+  }
+  const targetAqlQuery = `objectType IN (${allTypeIds.join(", ")})`;
+  console.log("Compiled multi-link targeted AQL query:", targetAqlQuery);
+
+  updateConnectionUI("syncing", t("sync_loading"));
+  showToast(t("sync_loading"), "info");
+
+  // Keep track of our actual runtime Cloud ID and Workspace ID
+  let targetCloudId = apiConfig.cloudId;
+  let targetWorkspaceId = apiConfig.workspaceId;
+
+  const isSubdomain = !targetCloudId.includes("-");
+
+  // Stage 1: Auto-resolve Cloud ID if it is a subdomain
+  if (isSubdomain) {
+    console.log("Cloud ID is a subdomain. Attempting to resolve to UUID...");
+    updateConnectionUI("syncing", "Resolving Cloud ID...");
+    const resolvedCloud = await resolveCloudId(targetCloudId);
+    if (resolvedCloud) {
+      // Save the human-readable subdomain before we overwrite apiConfig.cloudId with the UUID!
+      safeStorage.set("localStorage", "assetGuard_subdomain", targetCloudId);
+      
+      console.log("Resolved Cloud ID UUID:", resolvedCloud);
+      targetCloudId = resolvedCloud;
+      // Also update stored config so we don't have to resolve next time
+      apiConfig.cloudId = resolvedCloud;
+      const cloudInput = document.getElementById("api-cloud-id");
+      if (cloudInput) cloudInput.value = resolvedCloud;
+      saveState();
+    }
+  }
+
+  // Stage 2: Auto-resolve Workspace ID if it is a schema ID (not a UUID)
+  if (!isValidUUID(targetWorkspaceId)) {
+    console.log(`Workspace ID '${targetWorkspaceId}' is a Schema ID. Attempting auto-resolution...`);
+    updateConnectionUI("syncing", "Resolving Workspace ID...");
+    try {
+      const originalSubdomain = !apiConfig.cloudId.includes("-") ? apiConfig.cloudId : (isSubdomain ? apiConfig.cloudId : null);
+      const resolvedWorkspace = await resolveWorkspaceId(targetCloudId, originalSubdomain);
+      if (resolvedWorkspace) {
+        console.log("Resolved Workspace ID UUID:", resolvedWorkspace);
+        targetWorkspaceId = resolvedWorkspace;
+        // Save back to state
+        apiConfig.workspaceId = resolvedWorkspace;
+        const workspaceInput = document.getElementById("api-workspace-id");
+        if (workspaceInput) workspaceInput.value = resolvedWorkspace;
+        saveState();
+        showToast("Workspace ID resolved automatically!", "success");
+      }
+    } catch (err) {
+      console.error("Workspace ID resolution failed:", err.message);
+      let diagMsg = "Could not resolve Schema ID to Atlassian Workspace UUID.";
+      if (err.message.includes("401") || err.message.includes("unauthorized") || err.message.includes("Unauthorized")) {
+        diagMsg = "Auth failed (HTTP 401). Please verify your Atlassian Email and API Token in settings!";
+      } else if (err.message.includes("Failed to fetch") || err.message.includes("NetworkError") || err.message.includes("abort")) {
+        diagMsg = "Network blocked! Please make sure your Chrome 'Allow CORS' extension is turned ON!";
+      } else {
+        diagMsg = `Resolution failed: ${err.message}. Try pasting your long Workspace UUID directly!`;
+      }
+      updateConnectionUI("error", diagMsg);
+      showToast(diagMsg, "error");
+      return; // Stop the sync immediately to prevent misleading 404 dead link screens!
+    }
+  }
+
+  updateConnectionUI("syncing", "Fetching Assets from Atlassian...");
+
+  // Define the common Atlassian Assets API path variants using final UUIDs
+  const paths = [];
+  
+  // 1. Prioritize known working base URL if we have synced successfully before
+  if (atlassianBaseUrl) {
+    // If targetWorkspaceId is a UUID but the cached base URL contains a legacy schema integer ID,
+    // or vice versa, discard the stale cached base URL to avoid 404 loops or slow timeouts!
+    const isTargetUuid = isValidUUID(targetWorkspaceId);
+    const cachedContainsUuid = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i.test(atlassianBaseUrl);
+    
+    if (isTargetUuid === cachedContainsUuid) {
+      const verifiedPath = `${atlassianBaseUrl}/object/aql`;
+      paths.push(verifiedPath);
+    } else {
+      console.warn("Discarding stale cached base URL due to format mismatch:", atlassianBaseUrl);
+      safeStorage.remove("sessionStorage", "assetGuard_base_url");
+      atlassianBaseUrl = "";
+    }
+  }
+
+  // 2. High-speed Official public API Gateway paths (using resolved UUIDs)
+  if (targetCloudId && targetCloudId.includes("-")) {
+    const p1 = `https://api.atlassian.com/ex/jira/${targetCloudId}/jsm/assets/workspace/${targetWorkspaceId}/v1/object/aql`;
+    const p2 = `https://api.atlassian.com/ex/jira/${targetCloudId}/assets/workspace/${targetWorkspaceId}/v1/object/aql`;
+    if (!paths.includes(p1)) paths.push(p1);
+    if (!paths.includes(p2)) paths.push(p2);
+  }
+
+  // 3. Fallbacks (only if direct UUID paths fail)
+  const originalSubdomainText = !apiConfig.cloudId.includes("-") ? apiConfig.cloudId : null;
+  if (originalSubdomainText) {
+    const p = `https://${originalSubdomainText}.atlassian.net/gateway/api/jsm/assets/workspace/${targetWorkspaceId}/v1/object/aql`;
+    if (!paths.includes(p)) paths.push(p);
+  }
+  const pFallback = `https://api.atlassian.com/jsm/assets/workspace/${targetWorkspaceId}/v1/object/aql`;
+  if (!paths.includes(pFallback)) paths.push(pFallback);
+
+  let success = false;
+  let lastError = null;
+  let remoteAssets = [];
+
+  for (let i = 0; i < paths.length; i++) {
+    let pageStart = 0;
+    const pageLimit = 25; // Atlassian enforces a strict maximum page-size limit of 25 for AQL queries. Keeping this at 25 allows smooth, infinite page-looping!
+    let allValuesForPath = [];
+    let pathSuccess = false;
+    let hasMore = true;
+
+    while (hasMore) {
+      const currentUrl = `${paths[i]}?start=${pageStart}&limit=${pageLimit}&resultsPerPage=${pageLimit}&cb=${Date.now()}`;
+      console.log(`Syncing page starting at ${pageStart}...`, currentUrl);
+
+      // Create a 5-second network timeout controller to prevent syncing hangs
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+      try {
+        const auth = btoa(`${apiConfig.email}:${apiConfig.token}`);
+        const response = await fetch(currentUrl, {
+          method: "POST",
+          signal: controller.signal,
+          headers: {
+            "Authorization": `Basic ${auth}`,
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "X-ExperimentalApi": "opt-in"
+          },
+          body: JSON.stringify({
+            qlQuery: targetAqlQuery,
+            includeAttributes: true,
+            start: pageStart,
+            resultsPerPage: pageLimit
+          })
+        });
+
+        clearTimeout(timeoutId);
+
+        if (response && response.ok) {
+          const data = await response.json();
+          if (data && data.values && data.values.length > 0) {
+            allValuesForPath = allValuesForPath.concat(data.values);
+            
+            // Provide active, real-time download count in the UI so they know it is busy downloading
+            updateConnectionUI("syncing", `Syncing: Loaded ${allValuesForPath.length} assets...`);
+            
+            // Advance start offset by the actual number of assets returned
+            pageStart += data.values.length;
+            
+            // Check if we retrieved everything or reached our dynamic safety sync limit
+            const maxSyncLimit = apiConfig.syncLimit || 100;
+            if (allValuesForPath.length >= maxSyncLimit) {
+              console.log(`Reached safety sync limit of ${maxSyncLimit} assets.`);
+              hasMore = false;
+            } else if (data.totalFilterCount !== undefined) {
+              if (allValuesForPath.length >= data.totalFilterCount) {
+                hasMore = false;
+              }
+            } else {
+              // Fallback: Stop if less than the requested limit is returned
+              if (data.values.length < pageLimit || data.isLastPage === true) {
+                hasMore = false;
+              }
+            }
+            pathSuccess = true;
+          } else {
+            hasMore = false;
+          }
+        } else if (response) {
+          const errText = await response.text();
+          let errTextClean = errText || response.statusText;
+          if (response.status === 404) {
+            errTextClean = "Jira Assets path not found (404 Not Found). This usually means either your Cloud UUID or Workspace UUID is mismatched or unresolved.";
+          }
+          lastError = new Error(`HTTP ${response.status}: ${errTextClean}`);
+          console.warn(`Page starting at ${pageStart} failed:`, lastError.message);
+          hasMore = false;
+          pathSuccess = false;
+        }
+      } catch (err) {
+        lastError = err;
+        console.warn(`Exception on page starting at ${pageStart}:`, err.message);
+        hasMore = false;
+        pathSuccess = false;
+      }
+    }
+
+    if (pathSuccess && allValuesForPath.length > 0) {
+      remoteAssets = allValuesForPath.map(mapAtlassianObject);
+      success = true;
+
+      // Save working base URL and dynamic mapping
+      const currentBase = paths[i].replace("/object/aql", "");
+      safeStorage.set("sessionStorage", "assetGuard_base_url", currentBase);
+      atlassianBaseUrl = currentBase;
+
+      // Build attribute ID mapping dynamically from the synced assets' attributes
+      const attrMap = {};
+      let detectedObjectTypeId = "";
+      allValuesForPath.forEach(obj => {
+        if (obj.objectType && obj.objectType.id) {
+          detectedObjectTypeId = obj.objectType.id;
+        }
+        if (obj.attributes) {
+          obj.attributes.forEach(attr => {
+            if (attr.objectTypeAttribute && attr.objectTypeAttribute.name && attr.objectTypeAttribute.id) {
+              attrMap[attr.objectTypeAttribute.name.toLowerCase()] = attr.objectTypeAttribute.id;
+            }
+          });
+        }
+      });
+      if (detectedObjectTypeId) {
+        safeStorage.set("localStorage", "assetGuard_detected_object_type_id", detectedObjectTypeId);
+      }
+      safeStorage.set("localStorage", "assetGuard_attribute_map", JSON.stringify(attrMap));
+
+      console.log(`Sync succeeded on Path ${i + 1} with ${allValuesForPath.length} total assets retrieved!`);
+      break; // Stop trying other paths
+    }
+  }
+
+  if (success) {
+    // Merge strategy: Remote Overwrites Local (Atlassian Wins)
+    remoteAssets.forEach(remote => {
+      const index = assets.findIndex(a => a.id.toLowerCase() === remote.id.toLowerCase());
+      if (index !== -1) {
+        assets[index] = { ...assets[index], ...remote };
+      } else {
+        assets.push(remote);
+      }
+    });
+
+    safeStorage.set("localStorage", "assetGuard_last_sync_count", remoteAssets.length);
+    saveState();
+    updateMetrics();
+    renderAssetList();
+    updateConnectionUI("connected");
+    showToast(t("notif_sync_success").replace("{count}", remoteAssets.length), "success");
+  } else {
+    console.error("All sync paths failed. Last error:", lastError);
+    const errMsg = lastError ? lastError.message : "404 Not Found";
+    updateConnectionUI("error", errMsg);
+    showToast(t("notif_sync_error").replace("{error}", errMsg), "error");
+  }
+}
+
+function mapAtlassianObject(obj) {
+  const getAttr = (name) => {
+    if (!obj.attributes) return "";
+    const attr = obj.attributes.find(a => a.objectTypeAttribute && a.objectTypeAttribute.name.toLowerCase() === name.toLowerCase());
+    return attr && attr.objectAttributeValues && attr.objectAttributeValues.length > 0 ? attr.objectAttributeValues[0].displayValue : "";
+  };
+
+  return {
+    atlassianObjectId: obj.id, // Store original Jira Assets ID
+    id: obj.label || obj.id,
+    name: obj.name || obj.label || obj.id,
+    model: getAttr("Model") || obj.name || "Standard Model",
+    category: (obj.objectType && obj.objectType.name) ? obj.objectType.name : (getAttr("Category") || "IT Asset"),
+    status: getAttr("Status") || "Open",
+    owner: getAttr("Owner") || "",
+    condition: "Good",
+    serial: getAttr("Serial Number") || getAttr("Serial") || "N/A",
+    location: getAttr("Location") || "Corporate Office",
+    lastUpdated: new Date().toLocaleDateString(),
+    history: [{
+      date: new Date().toLocaleDateString(),
+      type: "Sync",
+      user: "System",
+      note: "Synchronized from Atlassian Assets"
+    }],
+    specs: {
+      cpu: getAttr("CPU") || "---",
+      ram: getAttr("RAM") || "---",
+      storage: getAttr("Storage") || "---",
+      os: getAttr("OS") || "---"
+    }
+  };
+}
+
+// Translation Helper
+function t(key, params = {}) {
+  const dict = translations[currentLanguage] || translations["en"];
+  let text = dict[key] || translations["en"][key] || key;
+  
+  // Replace parameters like {name} with values from params object
+  for (const [pKey, pVal] of Object.entries(params)) {
+    // If the param value itself is a translation key, translate it
+    const translatedVal = dict[pVal] || translations["en"][pVal] || pVal;
+    text = text.replace(new RegExp(`\\{${pKey}\\}`, 'g'), translatedVal);
+  }
+  
+  return text;
+}
+
+// Apply translations to the whole UI
+function applyTranslations(lang) {
+  currentLanguage = lang;
+  
+  // Update UI Elements with data-i18n
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.getAttribute("data-i18n");
+    el.textContent = t(key);
+  });
+  
+  // Update placeholders
+  document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+    const key = el.getAttribute("data-i18n-placeholder");
+    el.placeholder = t(key);
+  });
+
+  // Refresh dynamic content
+  updateMetrics();
+  renderAssetList();
+}
+
+// Audio Synthesizer Beep
+function playBeep() {
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    oscillator.type = "sine";
+    oscillator.frequency.setValueAtTime(1000, audioCtx.currentTime); 
+    gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime); 
+    
+    oscillator.start();
+    oscillator.stop(audioCtx.currentTime + 0.12); 
+  } catch (e) {
+    console.warn("Audio Context sound failed (permissions may be blocked):", e);
+  }
+}
+
+// Toast System
+function showToast(message, type = "info") {
+  const container = document.getElementById("toast-container");
+  if (!container) return;
+
+  const toast = document.createElement("div");
+  toast.className = `toast ${type}`;
+  
+  let icon = '<i class="fa-solid fa-circle-info"></i>';
+  if (type === "success") icon = '<i class="fa-solid fa-circle-check"></i>';
+  if (type === "error") icon = '<i class="fa-solid fa-circle-xmark"></i>';
+  
+  toast.innerHTML = `${icon} <span>${message}</span>`;
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.animation = "toast-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) reverse forwards";
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
+// Metrics Panel Updater
+function updateMetrics() {
+  const totalCount = assets.length;
+  const openCount = assets.filter(a => a.status === "Open").length;
+  const ownedCount = assets.filter(a => a.status === "Owned").length;
+  const brokenCount = assets.filter(a => a.status === "Not Working").length;
+
+  document.getElementById("metric-total").textContent = totalCount;
+  document.getElementById("metric-open").textContent = openCount;
+  document.getElementById("metric-owned").textContent = ownedCount;
+  document.getElementById("metric-broken").textContent = brokenCount;
+}
+
+// Render Asset Catalog List
+function renderAssetList(resetPage = false) {
+  if (resetPage) currentPage = 1;
+
+  const grid = document.getElementById("asset-list-grid");
+  if (!grid) return;
+  grid.innerHTML = "";
+
+  const terms = searchQuery.toLowerCase().trim().split(/\s+/).filter(t => t.length > 0);
+
+  const filtered = assets.filter(asset => {
+    let categoryMatch = (activeCategory === "All") || (activeCategory === asset.category);
+    let statusMatch = (activeStatus === "All") || (activeStatus === asset.status);
+
+    const searchMatch = terms.every(term => {
+      return (asset.id || "").toLowerCase().includes(term) ||
+             (asset.name || "").toLowerCase().includes(term) ||
+             (asset.owner || "").toLowerCase().includes(term) ||
+             (asset.category || "").toLowerCase().includes(term) ||
+             (asset.condition || "").toLowerCase().includes(term);
+    });
+
+    return categoryMatch && statusMatch && searchMatch;
+  });
+
+  const totalPages = Math.ceil(filtered.length / assetsPerPage);
+  if (currentPage > totalPages) currentPage = Math.max(1, totalPages);
+
+  const startNum = filtered.length === 0 ? 0 : (currentPage - 1) * assetsPerPage + 1;
+  const endNum = Math.min(currentPage * assetsPerPage, filtered.length);
+
+  const counterEl = document.getElementById("results-counter");
+  if (counterEl) {
+    counterEl.textContent = `Showing ${startNum} - ${endNum} of ${filtered.length} assets (Total: ${assets.length})`;
+  }
+
+  // Manage client-side pagination buttons state & visibility
+  const paginationControls = document.getElementById("pagination-controls");
+  const pageIndicator = document.getElementById("page-indicator");
+  const prevBtn = document.getElementById("prev-page-btn");
+  const nextBtn = document.getElementById("next-page-btn");
+  
+  if (paginationControls && pageIndicator && prevBtn && nextBtn) {
+    if (filtered.length > assetsPerPage) {
+      paginationControls.style.display = "flex";
+      pageIndicator.textContent = `Page ${currentPage} of ${totalPages}`;
+      prevBtn.disabled = (currentPage === 1);
+      nextBtn.disabled = (currentPage === totalPages);
+    } else {
+      paginationControls.style.display = "none";
+    }
+  }
+
+  const emptyState = document.getElementById("empty-state");
+  if (filtered.length === 0) {
+    if (emptyState) emptyState.style.display = "block";
+    grid.style.display = "none";
+    return;
+  } else {
+    if (emptyState) emptyState.style.display = "none";
+    grid.style.display = "grid";
+  }
+
+  // Slice results to render only the 50 assets for the current page
+  const pageAssets = filtered.slice((currentPage - 1) * assetsPerPage, currentPage * assetsPerPage);
+
+  pageAssets.forEach((asset, index) => {
+    const card = document.createElement("div");
+    card.className = "asset-card";
+    card.style.animationDelay = `${index * 0.05}s`;
+    
+    let statusClass = asset.status.toLowerCase().replace(" ", "-");
+    let statusKey = `status_${asset.status.toLowerCase().replace(" ", "_")}`;
+
+    // Category Icons Map
+    let categoryIcon = "fa-laptop";
+    const cat = asset.category.toLowerCase().replace(/[-\s]+/g, "_");
+    
+    const iconMap = {
+      laptop: "fa-laptop",
+      tablet: "fa-tablet-screen-button",
+      phone: "fa-mobile-screen-button",
+      monitor: "fa-desktop",
+      computer: "fa-desktop",
+      projector: "fa-video",
+      digital_signage: "fa-tv",
+      printer: "fa-print",
+      charger: "fa-plug",
+      av_cart: "fa-truck-ramp-box",
+      mixing_console: "fa-sliders",
+      microphone: "fa-microphone",
+      receiver: "fa-radio",
+      laptop_storage_cart: "fa-cart-shopping",
+      scanner: "fa-print",
+      video_conferencing_kit: "fa-chalkboard-user",
+      jamboard: "fa-chalkboard",
+      speakermic: "fa-volume-high",
+      drive_external: "fa-hard-drive",
+      camera: "fa-camera",
+      projection_screen: "fa-display",
+      sensor: "fa-microchip",
+      speaker: "fa-volume-up",
+      mobile_hotspot: "fa-wifi",
+      transducer: "fa-wave-square",
+      ups: "fa-battery-three-quarters",
+      time_clock: "fa-clock",
+      pos_devices: "fa-credit-card",
+      security_key: "fa-key",
+      operating_system: "fa-window-maximize",
+      software: "fa-floppy-disk",
+      other: "fa-box-archive"
+    };
+
+    if (iconMap[cat]) {
+      categoryIcon = iconMap[cat];
+    } else if (cat.includes("drive")) {
+      categoryIcon = "fa-hard-drive";
+    } else if (cat.includes("projection")) {
+      categoryIcon = "fa-display";
+    } else if (cat.includes("hotspot")) {
+      categoryIcon = "fa-wifi";
+    }
+
+    card.innerHTML = `
+      <div class="asset-card-header">
+        <span class="asset-id-tag">${escapeHTML(asset.id)}</span>
+        <span class="status-badge ${statusClass}">${t(statusKey)}</span>
+      </div>
+      <h3 class="asset-title">${escapeHTML(asset.name)}</h3>
+      <div class="asset-meta">
+        <div class="meta-item">
+          <i class="fa-solid ${categoryIcon}"></i>
+          <span>${t(asset.category.toLowerCase().replace(/[-\s]+/g, "_"))}</span>
+        </div>
+        <div class="meta-item">
+          <i class="fa-solid fa-user"></i>
+          <span>${asset.owner ? escapeHTML(asset.owner) : "---"}</span>
+        </div>
+      </div>
+    `;
+    
+    card.onclick = () => openDetailsModal(asset.id);
+    grid.appendChild(card);
+  });
+}
+
+// User Profile & Directory Logic
+function openPeopleDirectory() {
+  renderPeopleList();
+  openModal("people-directory-modal");
+}
+
+function renderPeopleList() {
+  const peopleList = document.getElementById("people-list");
+  const searchInput = document.getElementById("people-search-input");
+  const filter = searchInput ? searchInput.value.toLowerCase().trim() : "";
+  
+  peopleList.innerHTML = "";
+  
+  // Find all unique owners
+  const ownersSet = new Set();
+  assets.forEach(a => {
+    if (a.owner) ownersSet.add(a.owner);
+  });
+  
+  const owners = Array.from(ownersSet).filter(owner => 
+    !filter || owner.toLowerCase().includes(filter)
+  ).sort();
+  
+  if (owners.length === 0) {
+    peopleList.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 20px;">${t("no_assets_owned")}</div>`;
+  } else {
+    owners.forEach(owner => {
+      const userAssets = assets.filter(a => a.owner === owner);
+      const btn = document.createElement("button");
+      btn.className = "btn btn-secondary";
+      btn.style.justifyContent = "space-between";
+      btn.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <i class="fa-solid fa-user-circle" style="font-size: 18px; color: var(--accent-purple);"></i>
+          <span>${escapeHTML(owner)}</span>
+        </div>
+        <span class="status-badge owned" style="font-size: 10px;">${userAssets.length}</span>
+      `;
+      btn.onclick = () => {
+        closeModal("people-directory-modal");
+        openUserProfile(owner);
+      };
+      peopleList.appendChild(btn);
+    });
+  }
+}
+
+function openUserProfile(userName) {
+  const userAssets = assets.filter(a => a.owner === userName);
+  
+  document.getElementById("user-profile-name").textContent = userName;
+  document.getElementById("user-profile-stats").textContent = `${userAssets.length} Assets Owned`;
+  
+  const container = document.getElementById("user-assets-list");
+  container.innerHTML = "";
+  
+  userAssets.forEach(asset => {
+    const item = document.createElement("div");
+    item.className = "user-asset-item";
+    item.innerHTML = `
+      <div class="user-asset-info">
+        <span class="user-asset-tag">${escapeHTML(asset.id)}</span>
+        <span class="user-asset-model">${escapeHTML(asset.name)}</span>
+        <span class="user-asset-category">${t(asset.category.toLowerCase())}</span>
+      </div>
+      <button class="btn btn-secondary btn-sm" style="min-height: 36px; padding: 0 12px; font-size: 12px;">
+        ${t("view_details")}
+      </button>
+    `;
+    item.querySelector("button").onclick = () => {
+      closeModal("user-profile-modal");
+      openDetailsModal(asset.id);
+    };
+    container.appendChild(item);
+  });
+  
+  // Set up Bulk Return button
+  const bulkBtn = document.getElementById("bulk-return-btn");
+  bulkBtn.onclick = () => {
+    if (confirm(t("confirm_bulk_return", { count: userAssets.length, user: userName }))) {
+      bulkReturnAssets(userName);
+    }
+  };
+  
+  openModal("user-profile-modal");
+}
+
+function bulkReturnAssets(userName) {
+  const userAssets = assets.filter(a => a.owner === userName);
+  const timestamp = new Date().toISOString();
+  
+  userAssets.forEach(asset => {
+    // Log distinct history event
+    asset.history.push({
+      timestamp,
+      typeKey: "history_type_checkin",
+      descKey: "history_checked_in",
+      params: { 
+        owner: userName, 
+        condition: asset.condition,
+        note: "Bulk return" 
+      }
+    });
+    
+    // Update state
+    asset.status = "Open";
+    asset.owner = "";
+  });
+  
+  saveState();
+  updateMetrics();
+  renderAssetList();
+  closeModal("user-profile-modal");
+  showToast(t("notif_saved"), "success");
+}
+
+// Helper to resolve Atlassian Direct Object URL
+function getAtlassianObjectUrl(objectId) {
+  let sub = safeStorage.get("localStorage", "assetGuard_subdomain") || "";
+  if (!sub && apiConfig.cloudId && !apiConfig.cloudId.includes("-")) {
+    sub = apiConfig.cloudId;
+  }
+  if (!sub) {
+    sub = "smm-sandbox"; // Standard project fallback
+  }
+  return `https://${sub}.atlassian.net/jira/assets/object/${objectId}`;
+}
+
+// Open Detail/Action Modal
+function openDetailsModal(assetId, defaultTab = "overview") {
+  const asset = assets.find(a => (a.id || "").toLowerCase() === assetId.toLowerCase());
+  if (!asset) {
+    showToast(t("notif_not_found"), "error");
+    return;
+  }
+
+  // Set Title
+  document.getElementById("details-modal-title").textContent = asset.id;
+
+  // Atlassian Link Setup
+  const jiraLinkContainer = document.getElementById("view-jira-link-container");
+  const jiraLink = document.getElementById("view-jira-link");
+  if (jiraLinkContainer && jiraLink) {
+    if (asset.atlassianObjectId) {
+      jiraLink.href = getAtlassianObjectUrl(asset.atlassianObjectId);
+      jiraLinkContainer.style.display = "block";
+    } else {
+      jiraLinkContainer.style.display = "none";
+    }
+  }
+
+  // Overview Tab Fields
+  document.getElementById("view-name").textContent = asset.name;
+  document.getElementById("view-category").textContent = t(asset.category.toLowerCase().replace(/[-\s]+/g, "_"));
+  document.getElementById("view-serial").textContent = asset.serialNumber || "--";
+  document.getElementById("view-location").textContent = asset.location || "--";
+  document.getElementById("view-condition").textContent = asset.condition;
+
+  // Status badge setup
+  const statusBadge = document.getElementById("view-status-badge");
+  const statusSlug = asset.status.toLowerCase().replace(" ", "-");
+  statusBadge.className = `status-badge ${statusSlug}`;
+  statusBadge.textContent = t(`status_${asset.status.toLowerCase().replace(" ", "_")}`);
+  
+  // Owner setup
+  const ownerText = document.getElementById("view-owner-text");
+  if (asset.status === "Owned") {
+    ownerText.textContent = `${t("owner")}: ${asset.owner}`;
+  } else if (asset.status === "Open") {
+    ownerText.textContent = t("status_open");
+  } else {
+    ownerText.textContent = `${t("owner")}: ${asset.owner || "---"} (${t("status_not_working")})`;
+  }
+
+  // Populate Specs List
+  const specsList = document.getElementById("view-specs-list");
+  specsList.innerHTML = "";
+  if (asset.specs && Object.keys(asset.specs).length > 0) {
+    for (const [key, value] of Object.entries(asset.specs)) {
+      const formattedKey = key.charAt(0).toUpperCase() + key.slice(1);
+      const div = document.createElement("div");
+      div.className = "spec-item";
+      div.innerHTML = `<span class="spec-key">${escapeHTML(formattedKey)}</span><span class="spec-val">${escapeHTML(value)}</span>`;
+      specsList.appendChild(div);
+    }
+  } else {
+    specsList.innerHTML = `<span style="color: var(--text-muted); font-size:12px;">---</span>`;
+  }
+  
+  // Acquisition Date
+  if (asset.acquisitionDate) {
+    const acqDiv = document.createElement("div");
+    acqDiv.className = "spec-item";
+    acqDiv.innerHTML = `<span class="spec-key">${t("acquisition_date")}</span><span class="spec-val">${escapeHTML(asset.acquisitionDate)}</span>`;
+    specsList.appendChild(acqDiv);
+  }
+
+  // Tab Content 2 (Edit Form) setup
+  document.getElementById("edit-asset-id").value = asset.id;
+  document.getElementById("edit-status").value = asset.status;
+  document.getElementById("edit-owner").value = asset.owner;
+  document.getElementById("edit-location").value = asset.location;
+  
+  // Reset error displays
+  document.getElementById("error-edit-owner").classList.remove("active");
+  document.getElementById("error-edit-issue").classList.remove("active");
+
+  const condNormal = document.getElementById("edit-condition-normal");
+  const condNotWorking = document.getElementById("edit-condition-notworking");
+  
+  if (asset.status === "Not Working") {
+    condNotWorking.value = asset.condition;
+    condNormal.value = "";
+  } else {
+    condNormal.value = asset.condition;
+    condNotWorking.value = "";
+  }
+
+  toggleEditStatusFields(asset.status);
+
+  // Tab Content 3 (History Timeline)
+  renderHistoryTimeline(asset.history, "view-history-timeline");
+
+  // Tab Content 4 (QR Code Generator)
+  generateQRTag(asset.id);
+
+  // Reset tab focus to parameterized defaultTab
+  switchDetailTab(defaultTab);
+
+  // Show Modal
+  openModal("details-modal");
+}
+
+// Enforce Form UI adjustments based on status
+function toggleEditStatusFields(status) {
+  const ownerGroup = document.getElementById("edit-owner-group");
+  const issueGroup = document.getElementById("edit-issue-group");
+  const normalGroup = document.getElementById("edit-condition-normal-group");
+
+  if (status === "Owned") {
+    ownerGroup.style.display = "block";
+    issueGroup.style.display = "none";
+    normalGroup.style.display = "block";
+  } else if (status === "Not Working") {
+    ownerGroup.style.display = "block";
+    issueGroup.style.display = "block";
+    normalGroup.style.display = "none";
+  } else {
+    ownerGroup.style.display = "none";
+    issueGroup.style.display = "none";
+    normalGroup.style.display = "block";
+  }
+}
+
+// Render History Timeline (Generic with Year Headers)
+function renderHistoryTimeline(historyList, containerId = "detail-history-timeline", showAssetInfo = false) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = "";
+
+  if (!historyList || historyList.length === 0) {
+    container.innerHTML = `<div style="color: var(--text-muted); font-size:13px; text-align:center;">---</div>`;
+    return;
+  }
+
+  const sorted = [...historyList].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+  
+  let lastYear = null;
+
+  sorted.forEach(item => {
+    const date = new Date(item.timestamp);
+    const year = date.getFullYear();
+    
+    // Insert Year Header if year changed
+    if (year !== lastYear) {
+      const yearHeader = document.createElement("div");
+      yearHeader.className = "timeline-year-header";
+      yearHeader.textContent = year;
+      container.appendChild(yearHeader);
+      lastYear = year;
+    }
+
+    const div = document.createElement("div");
+    
+    // Determine icon and color based on type
+    let icon = "•";
+    let typeClass = "event";
+    
+    if (item.typeKey) {
+      if (item.typeKey === "history_type_checkout") {
+        icon = "📤";
+        typeClass = "checkout";
+      } else if (item.typeKey === "history_type_checkin") {
+        icon = "📥";
+        typeClass = "checkin";
+      } else if (item.typeKey === "history_type_transfer") {
+        icon = "🔄";
+        typeClass = "transfer";
+      } else if (item.typeKey === "history_type_created") {
+        icon = "✨";
+        typeClass = "created";
+      } else if (item.typeKey === "history_type_status") {
+        icon = "⚙️";
+        typeClass = "status-change";
+      }
+    }
+    
+    div.className = `timeline-item ${typeClass}`;
+    
+    // Localized Date formatting
+    const dateStr = date.toLocaleString(currentLanguage, { 
+      weekday: 'short',
+      month: 'short', 
+      day: 'numeric', 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    });
+
+    // Handle structured vs legacy history
+    const description = item.descKey ? t(item.descKey, item.params || {}) : item.description;
+    const typeTitle = item.typeKey ? t(item.typeKey) : (item.type || "Event");
+    
+    const assetContext = showAssetInfo ? `<div class="timeline-asset-id"><strong>[${escapeHTML(item.assetId)}]</strong> ${escapeHTML(item.assetName)}</div>` : "";
+
+    div.innerHTML = `
+      <div class="timeline-time">${dateStr}</div>
+      <div class="timeline-title">${icon} ${escapeHTML(typeTitle)}</div>
+      ${assetContext}
+      <div class="timeline-desc">${escapeHTML(description)}</div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+// Global History Aggregation & Rendering
+function renderGlobalHistory() {
+  const categoryFilter = document.getElementById("global-history-category-filter").value;
+  const yearFilter = document.getElementById("global-history-year-filter").value;
+  const searchQuery = document.getElementById("global-history-search").value.toLowerCase().trim();
+
+  // Aggregate and Enrich
+  let globalEntries = [];
+  assets.forEach(asset => {
+    // Category filter
+    if (categoryFilter !== "All" && asset.category !== categoryFilter) return;
+
+    asset.history.forEach(entry => {
+      const year = new Date(entry.timestamp).getFullYear().toString();
+      
+      // Year filter
+      if (yearFilter !== "All" && year !== yearFilter) return;
+
+      globalEntries.push({
+        ...entry,
+        assetId: asset.id,
+        assetName: asset.name,
+        assetCategory: asset.category
+      });
+    });
+  });
+
+  // Search filter
+  if (searchQuery) {
+    globalEntries = globalEntries.filter(entry => {
+      const desc = entry.descKey ? t(entry.descKey, entry.params || {}).toLowerCase() : (entry.description || "").toLowerCase();
+      return entry.assetId.toLowerCase().includes(searchQuery) || 
+             entry.assetName.toLowerCase().includes(searchQuery) ||
+             desc.includes(searchQuery);
+    });
+  }
+
+  // Sort by timestamp
+  globalEntries.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+  // Cap at 100 entries for performance
+  const displayEntries = globalEntries.slice(0, 100);
+
+  renderHistoryTimeline(displayEntries, "global-history-timeline", true);
+}
+
+// Dynamically populate year filter based on data
+function populateYearFilter() {
+  const yearSet = new Set();
+  assets.forEach(asset => {
+    asset.history.forEach(entry => {
+      const year = new Date(entry.timestamp).getFullYear();
+      if (year) yearSet.add(year);
+    });
+  });
+
+  const filter = document.getElementById("global-history-year-filter");
+  if (!filter) return;
+
+  const currentVal = filter.value;
+  filter.innerHTML = `<option value="All" data-i18n="all_years">${t("all_years")}</option>`;
+  
+  Array.from(yearSet).sort((a, b) => b - a).forEach(year => {
+    const option = document.createElement("option");
+    option.value = year.toString();
+    option.textContent = year.toString();
+    filter.appendChild(option);
+  });
+
+  filter.value = currentVal || "All";
+}
+
+// Generate QR Code dynamically
+function generateQRTag(assetId) {
+  const container = document.getElementById("asset-qr-code-container");
+  container.innerHTML = "";
+  
+  try {
+    new QRCode(container, {
+      text: assetId,
+      width: 160,
+      height: 160,
+      colorDark: "#0c111d",
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.H
+    });
+  } catch (e) {
+    console.error("QR Code generation failed", e);
+    container.innerHTML = `<span style="color: var(--status-error);">Error</span>`;
+  }
+}
+
+// Switch detail panel tabs
+function switchDetailTab(tabId) {
+  document.querySelectorAll(".detail-tab").forEach(tab => {
+    tab.classList.toggle("active", tab.getAttribute("data-tab") === tabId);
+  });
+
+  document.querySelectorAll(".detail-pane").forEach(pane => {
+    pane.classList.toggle("active", pane.id === `detail-pane-${tabId}`);
+  });
+}
+// Setup Event Listeners
+function setupEventListeners() {
+  // Export Data
+  on("export-data-btn", "click", () => {
+    const dataStr = JSON.stringify(assets, null, 2);
+    const blob = new Blob([dataStr], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `asset_backup_${new Date().toISOString().split("T")[0]}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+    showToast("Backup downloaded successfully!", "success");
+  });
+
+  // Clear All Data
+  on("clear-all-data-btn", "click", () => {
+    if (confirm(t("confirm_clear_all"))) {
+      assets = [];
+      saveState();
+      updateMetrics();
+      renderAssetList();
+      closeModal("global-history-modal");
+      showToast(t("notif_saved"), "success");
+    }
+  });
+
+  // Language Toggles
+  const langToggle = document.getElementById("lang-toggle-btn");
+  if (langToggle) {
+    langToggle.addEventListener("click", () => {
+      currentLanguage = currentLanguage === "en" ? "es" : "en";
+      applyTranslations(currentLanguage);
+    });
+  }
+
+  // Category tabs click
+  on("category-tabs", "click", (e) => {
+    if (e.target.classList.contains("tab-btn")) {
+      document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+      e.target.classList.add("active");
+      
+      // Reset the "More Categories..." select box
+      const moreSelect = document.getElementById("more-categories-select");
+      if (moreSelect) moreSelect.value = "";
+      
+      activeCategory = e.target.getAttribute("data-category");
+      renderAssetList(true);
+    }
+  });
+
+  // More Categories dropdown selection
+  on("more-categories-select", "change", (e) => {
+    const selectedCategory = e.target.value;
+    if (!selectedCategory) return; // Ignore placeholder option selection
+    
+    // Deselect all quick chips
+    document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+    
+    activeCategory = selectedCategory;
+    renderAssetList(true);
+  });
+
+  // Status filters click
+  on("status-filters", "click", (e) => {
+    if (e.target.classList.contains("filter-chip")) {
+      document.querySelectorAll(".filter-chip").forEach(btn => btn.classList.remove("active"));
+      e.target.classList.add("active");
+      activeStatus = e.target.getAttribute("data-status");
+      renderAssetList(true);
+    }
+  });
+
+  // Metric Card Clicks for Quick Filter
+  onSelector(".metric-card.open-metric", "click", () => {
+    const chip = document.querySelector('.filter-chip[data-status="Open"]');
+    if (chip) chip.click();
+  });
+  onSelector(".metric-card.owned-metric", "click", () => {
+    const chip = document.querySelector('.filter-chip[data-status="Owned"]');
+    if (chip) chip.click();
+  });
+  onSelector(".metric-card.broken-metric", "click", () => {
+    const chip = document.querySelector('.filter-chip[data-status="Not Working"]');
+    if (chip) chip.click();
+  });
+
+  // Search input change
+  on("asset-search-input", "input", (e) => {
+    searchQuery = e.target.value;
+    renderAssetList(true);
+  });
+
+  // Client-Side Pagination controls
+  on("prev-page-btn", "click", () => {
+    if (currentPage > 1) {
+      currentPage--;
+      renderAssetList();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  });
+
+  on("next-page-btn", "click", () => {
+    // Dynamically check total filtered assets to cap the next page action
+    const filteredCount = assets.filter(asset => {
+      let categoryMatch = (activeCategory === "All") || (activeCategory === asset.category);
+      let statusMatch = (activeStatus === "All") || (activeStatus === asset.status);
+      const terms = searchQuery.toLowerCase().trim().split(/\s+/).filter(t => t.length > 0);
+      const searchMatch = terms.every(term => {
+        return (asset.id || "").toLowerCase().includes(term) ||
+               (asset.name || "").toLowerCase().includes(term) ||
+               (asset.owner || "").toLowerCase().includes(term) ||
+               (asset.category || "").toLowerCase().includes(term) ||
+               (asset.condition || "").toLowerCase().includes(term);
+      });
+      return categoryMatch && statusMatch && searchMatch;
+    }).length;
+
+    const totalPages = Math.ceil(filteredCount / assetsPerPage);
+    if (currentPage < totalPages) {
+      currentPage++;
+      renderAssetList();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  });
+
+  // Add Asset
+  on("add-asset-btn", "click", () => {
+    openModal("add-asset-modal");
+  });
+
+  on("add-asset-close-btn", "click", () => {
+    closeModal("add-asset-modal");
+  });
+
+  // Sync Atlassian
+  on("sync-atlassian-btn", "click", () => {
+    syncWithAtlassian();
+  });
+
+  // Settings
+  on("settings-btn", "click", () => {
+    const assistant = document.getElementById("magic-setup-assistant");
+    if (assistant) assistant.style.display = "none";
+    openModal("settings-modal");
+  });
+
+  // Magic URL Sniffer (Unified Processor)
+  function processMagicUrl(url) {
+    if (!url || (!url.includes("atlassian.net") && !url.includes("api.atlassian.com"))) return; 
+    
+    // Helper to clean IDs
+    const clean = (id) => id ? id.replace(/[^a-z0-9-]/gi, "").trim() : "";
+
+    // Method B Bypass: If the pasted URL already contains raw UUID strings (e.g. copied from Developer Tools), extract them directly
+    const uuidPattern = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi;
+    const allUUIDs = url.match(uuidPattern);
+    
+    if (allUUIDs && allUUIDs.length > 0) {
+      let directCloudId = "";
+      let directWorkspaceId = "";
+
+      // 1. Try to find Cloud ID (following /ex/jira/)
+      const cloudIdMatch = url.match(/\/ex\/jira\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/i);
+      if (cloudIdMatch) {
+        directCloudId = cloudIdMatch[1];
+      }
+
+      // 2. Try to find Workspace ID (following /workspace/ or /servicedesk/assets/ or /assets/)
+      const workspaceIdMatch = url.match(/\/(?:workspace|servicedesk\/assets|assets)\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/i);
+      if (workspaceIdMatch) {
+        directWorkspaceId = workspaceIdMatch[1];
+      }
+
+      // 3. Fallbacks ONLY if we matched multiple UUIDs in an unstructured string
+      if (!directCloudId && !directWorkspaceId && allUUIDs.length >= 2) {
+        directCloudId = allUUIDs[0];
+        directWorkspaceId = allUUIDs[1];
+      } else if (!directCloudId && !directWorkspaceId && allUUIDs.length === 1) {
+        // If there's only 1 UUID and we don't have structural path matching, try to see where it fits
+        if (url.includes("/ex/jira/")) {
+          directCloudId = allUUIDs[0];
+        } else if (url.includes("/workspace/") || url.includes("/servicedesk/assets/") || url.includes("/assets/")) {
+          directWorkspaceId = allUUIDs[0];
+        }
+      }
+
+      let updatedAny = false;
+      if (directCloudId) {
+        const cloudInput = document.getElementById("api-cloud-id");
+        if (cloudInput) cloudInput.value = directCloudId;
+        apiConfig.cloudId = directCloudId;
+        updatedAny = true;
+      }
+      if (directWorkspaceId) {
+        const workspaceInput = document.getElementById("api-workspace-id");
+        if (workspaceInput) workspaceInput.value = directWorkspaceId;
+        apiConfig.workspaceId = directWorkspaceId;
+        updatedAny = true;
+      }
+
+      if (updatedAny) {
+        saveState();
+        showToast("Method B Direct UUIDs extracted & loaded automatically!", "success");
+        return; // Direct extraction complete, bypass subdomain resolution
+      }
+    }
+
+    // 1. Try to find Workspace ID (Object Schema ID) using multiple pattern fallbacks
+    let workspaceId = "";
+    
+    // Pattern A: /object-schema/[ID]
+    const schemaMatch = url.match(/\/object-schema\/([a-z0-9-]+)/i);
+    // Pattern B: /objects/[ID] or /assets/[ID]
+    const objectsMatch = url.match(/\/objects?\/([a-z0-9-]+)/i);
+    // Pattern C: ?workspaceId=[ID] or &workspaceId=[ID]
+    const queryMatch = url.match(/[?&]workspaceId=([a-z0-9-]+)/i);
+    // Pattern D: /assets/([a-z0-9-]+) (simple folder match)
+    const simpleMatch = url.match(/\/assets\/([a-z0-9-]+)/i);
+
+    if (schemaMatch) {
+      workspaceId = clean(schemaMatch[1]);
+    } else if (objectsMatch) {
+      workspaceId = clean(objectsMatch[1]);
+    } else if (queryMatch) {
+      workspaceId = clean(queryMatch[1]);
+    } else if (simpleMatch) {
+      const parsed = clean(simpleMatch[1]);
+      // Avoid matching common folders as IDs
+      if (!["object-schema", "objects", "object", "schema"].includes(parsed)) {
+        workspaceId = parsed;
+      }
+    }
+
+    // Write Workspace ID to input
+    if (workspaceId) {
+      const workspaceInput = document.getElementById("api-workspace-id");
+      if (workspaceInput) workspaceInput.value = workspaceId;
+      apiConfig.workspaceId = workspaceId;
+    }
+
+    // Extract optional typeId from URL query string if present
+    const typeIdMatch = url.match(/[?&]typeId=(\d+)/i);
+    if (typeIdMatch) {
+      const extractedTypeId = parseInt(typeIdMatch[1]);
+      if (extractedTypeId) {
+        safeStorage.set("localStorage", "assetGuard_extracted_type_id", extractedTypeId);
+        console.log("Extracted typeId from URL:", extractedTypeId);
+      }
+    }
+
+    // 2. Try to find Cloud ID / Subdomain
+    const domainMatch = url.match(/https?:\/\/([a-z0-9-]+)\.(atlassian\.net|jira\.com)/i);
+    if (domainMatch) {
+       const sub = domainMatch[1].toLowerCase();
+       if (!["jira", "admin", "id", "assets"].includes(sub)) {
+         safeStorage.set("localStorage", "assetGuard_subdomain", sub);
+         const cloudInput = document.getElementById("api-cloud-id");
+         if (cloudInput) cloudInput.value = clean(sub);
+         apiConfig.cloudId = sub;
+         // Render the customized Method B Assistant with direct URLs for their subdomain!
+         const assistant = document.getElementById("magic-setup-assistant");
+         if (assistant) {
+           assistant.style.display = "block";
+           assistant.innerHTML = `
+             <div style="font-weight: bold; color: var(--accent-blue); margin-bottom: 6px; display: flex; align-items: center; gap: 6px; font-size: 12px;">
+               <i class="fa-solid fa-wand-magic-sparkles"></i> Magic Setup Assistant
+             </div>
+             <p style="margin: 0 0 10px 0; font-size: 11px; color: var(--text-muted); line-height: 1.4;">
+               The background resolver is automatically communicating with Atlassian using your Email & API Token to fetch and configure your secure UUIDs...
+             </p>
+             <div id="magic-status-step" style="font-size: 11.5px; color: var(--text-primary); font-weight: 600; display: flex; align-items: center; gap: 6px; border-top: 1px solid var(--border-color); padding-top: 8px;">
+               <i class="fa-solid fa-spinner fa-spin" style="color: var(--accent-blue);"></i> Resolving secure Cloud UUID...
+             </div>
+           `;
+         }
+         
+         // Background resolver to get the real long Cloud ID using our proxy fallback!
+         showToast("Resolving Atlassian Cloud ID...", "info");
+         resolveCloudId(sub)
+           .then(resolvedCloud => {
+             if (resolvedCloud) {
+               const cloudInput = document.getElementById("api-cloud-id");
+               if (cloudInput) cloudInput.value = resolvedCloud;
+               apiConfig.cloudId = resolvedCloud;
+               saveState();
+               showToast("Cloud ID resolved successfully!", "success");
+               
+               const statusStep = document.getElementById("magic-status-step");
+               if (statusStep) {
+                 statusStep.innerHTML = `<i class="fa-solid fa-circle-check" style="color: var(--status-success);"></i> Cloud ID UUID Resolved!`;
+               }
+
+               // Attempt to resolve Workspace ID automatically too if credentials are input!
+               const emailInput = document.getElementById("api-email") ? document.getElementById("api-email").value.trim() : "";
+               const tokenInput = document.getElementById("api-token") ? document.getElementById("api-token").value.trim() : "";
+               if (emailInput && tokenInput && workspaceId && !isValidUUID(workspaceId)) {
+                 showToast("Resolving Workspace ID...", "info");
+                 apiConfig.email = emailInput;
+                 apiConfig.token = tokenInput;
+                 
+                 if (statusStep) {
+                   statusStep.innerHTML = `<i class="fa-solid fa-spinner fa-spin" style="color: var(--accent-blue);"></i> Resolving secure Workspace UUID...`;
+                 }
+                 
+                 resolveWorkspaceId(resolvedCloud, sub)
+                   .then(resolvedWorkspace => {
+                     if (resolvedWorkspace) {
+                       const workspaceInput = document.getElementById("api-workspace-id");
+                       if (workspaceInput) workspaceInput.value = resolvedWorkspace;
+                       apiConfig.workspaceId = resolvedWorkspace;
+                       saveState();
+                       showToast("Workspace ID resolved automatically!", "success");
+                       if (statusStep) {
+                         statusStep.innerHTML = `<i class="fa-solid fa-circle-check" style="color: var(--status-success);"></i> Both UUIDs Resolved & Saved!`;
+                       }
+                     }
+                   })
+                   .catch(err => {
+                     console.log("Background Workspace ID auto-resolve bypassed (likely CORS block):", err);
+                   });
+               }
+             } else {
+               console.warn("Could not resolve Cloud ID to a UUID. Subdomain set as fallback.");
+               const emailInput = document.getElementById("api-email") ? document.getElementById("api-email").value.trim() : "";
+               const tokenInput = document.getElementById("api-token") ? document.getElementById("api-token").value.trim() : "";
+               
+               let warningMsg = "CORS block or private sandbox. Please turn on 'Allow CORS' extension or use DevTools link!";
+               let statusHtml = `<i class="fa-solid fa-triangle-exclamation" style="color: var(--status-warning);"></i> Run with 'Allow CORS' turned ON to resolve UUIDs!`;
+               
+               if (!emailInput || !tokenInput) {
+                 warningMsg = "⚠️ Please enter your Atlassian Email & API Token FIRST so we can securely login to your private sandbox!";
+                 statusHtml = `<i class="fa-solid fa-key" style="color: var(--status-warning);"></i> Please enter your Email & API Token first!`;
+               }
+               
+               showToast(warningMsg, "warning");
+               const statusStep = document.getElementById("magic-status-step");
+               if (statusStep) {
+                 statusStep.innerHTML = statusHtml;
+               }
+             }
+           })
+           .catch(err => {
+             console.log("Background ID resolver exception:", err);
+             showToast("Workspace ID loaded. Subdomain saved as fallback.", "info");
+           });
+       }
+    }
+    
+    saveState();
+  }
+
+  // Bind the Magic Sniffer to both INPUT and PASTE events on the magic url box
+  on("api-magic-url", "input", (e) => {
+    processMagicUrl(e.target.value.trim());
+  });
+  on("api-magic-url", "paste", (e) => {
+    // Let clipboard capture populate the input box first, then process
+    setTimeout(() => {
+      const magicInput = document.getElementById("api-magic-url");
+      if (magicInput) {
+        processMagicUrl(magicInput.value.trim());
+      }
+    }, 50);
+  });
+
+  // Secondary catch-all fallback: Global Paste Listener for Settings Modal
+  on("settings-modal", "paste", (e) => {
+    const url = (e.clipboardData || window.clipboardData).getData('text').trim();
+    processMagicUrl(url);
+  });
+
+  on("people-directory-trigger-btn", "click", () => {
+    openPeopleDirectory();
+  });
+
+  on("settings-help-btn", "click", () => {
+    const helpSection = document.getElementById("settings-help-section");
+    helpSection.style.display = helpSection.style.display === "none" ? "block" : "none";
+  });
+
+  on("close-help-btn", "click", () => {
+    document.getElementById("settings-help-section").style.display = "none";
+  });
+
+  on("settings-close-btn", "click", () => {
+    closeModal("settings-modal");
+    document.getElementById("settings-help-section").style.display = "none"; // Reset for next time
+    const assistant = document.getElementById("magic-setup-assistant");
+    if (assistant) assistant.style.display = "none";
+  });
+
+  on("settings-form", "submit", (e) => {
+    e.preventDefault();
+    
+    const cloudIdInputVal = document.getElementById("api-cloud-id").value.trim();
+    if (cloudIdInputVal && !cloudIdInputVal.includes("-")) {
+      safeStorage.set("localStorage", "assetGuard_subdomain", cloudIdInputVal);
+    }
+
+    apiConfig = {
+      cloudId: cloudIdInputVal,
+      workspaceId: document.getElementById("api-workspace-id").value.trim(),
+      email: document.getElementById("api-email").value.trim(),
+      token: document.getElementById("api-token").value.trim(),
+      syncLimit: parseInt(document.getElementById("api-sync-limit").value) || 100
+    };
+    saveState();
+    
+    // Reset connection status upon saving new settings
+    if (isOfflineMode) {
+      updateConnectionUI("offline");
+    } else if (!apiConfig.cloudId || !apiConfig.workspaceId || !apiConfig.email || !apiConfig.token) {
+      safeStorage.set("localStorage", "assetGuard_last_sync_status", "unconfigured");
+      updateConnectionUI("unconfigured");
+    } else {
+      safeStorage.set("localStorage", "assetGuard_last_sync_status", "ready");
+      safeStorage.set("localStorage", "assetGuard_last_sync_error", "");
+      updateConnectionUI("ready");
+    }
+    
+    closeModal("settings-modal");
+    showToast(t("notif_config_saved"), "success");
+  });
+
+  on("clear-config-btn", "click", () => {
+    if (confirm(t("confirm_clear_all"))) { 
+      apiConfig = { cloudId: "", workspaceId: "", email: "", token: "", syncLimit: 100 };
+      saveState();
+      safeStorage.set("localStorage", "assetGuard_last_sync_status", "unconfigured");
+      safeStorage.set("localStorage", "assetGuard_last_sync_error", "");
+      // Force UI update
+      document.getElementById("api-cloud-id").value = "";
+      document.getElementById("api-workspace-id").value = "";
+      document.getElementById("api-email").value = "";
+      document.getElementById("api-token").value = "";
+      document.getElementById("api-sync-limit").value = "100";
+      
+      const assistant = document.getElementById("magic-setup-assistant");
+      if (assistant) assistant.style.display = "none";
+
+      updateConnectionUI("unconfigured");
+      showToast(t("notif_config_cleared"), "info");
+    }
+  });
+
+  // Global History
+  on("global-history-btn", "click", () => {
+    renderGlobalHistory();
+    openModal("global-history-modal");
+  });
+
+  on("global-history-close-btn", "click", () => {
+    closeModal("global-history-modal");
+  });
+
+  // Scan QR
+  on("scan-qr-btn", "click", () => {
+    openModal("scanner-modal");
+    startCameraScanner();
+  });
+
+  on("scanner-close-btn", "click", () => {
+    stopCameraScanner();
+    closeModal("scanner-modal");
+  });
+  
+  on("floating-help-btn", "click", () => {
+    openModal("app-guide-modal");
+  });
+
+  on("guide-close-btn", "click", () => {
+    closeModal("app-guide-modal");
+  });
+
+  on("guide-got-it-btn", "click", () => {
+    closeModal("app-guide-modal");
+  });
+
+  on("global-history-trigger-btn", "click", () => {
+    openModal("global-history-modal");
+    populateYearFilter();
+    renderGlobalHistory();
+  });
+
+  // Modal close buttons
+  on("scanner-close-btn", "click", () => {
+    closeModal("scanner-modal");
+    stopCameraScanner();
+  });
+
+  on("details-close-btn", "click", () => {
+    closeModal("details-modal");
+  });
+
+  on("people-directory-close-btn", "click", () => {
+    closeModal("people-directory-modal");
+  });
+  
+  on("user-profile-close-btn", "click", () => {
+    closeModal("user-profile-modal");
+  });
+
+  // Click overlay to close
+  window.addEventListener("click", (e) => {
+    if (e.target.classList.contains("modal-overlay")) {
+      closeModal(e.target.id);
+      if (e.target.id === "scanner-modal") {
+        stopCameraScanner();
+      }
+    }
+  });
+
+  // Detail Modal tab buttons click
+  onSelector(".detail-tabs", "click", (e) => {
+    if (e.target.classList.contains("detail-tab")) {
+      switchDetailTab(e.target.getAttribute("data-tab"));
+    }
+  });
+
+  // Enforce Form UI changes based on status
+  on("edit-status", "change", (e) => {
+    toggleEditStatusFields(e.target.value);
+  });
+
+  // People Search Filter
+  on("people-search-input", "input", renderPeopleList);
+
+  // Main Header Search Go Button Logic
+  on("main-search-go-btn", "click", () => {
+    const inputVal = document.getElementById("asset-search-input").value.trim();
+    if (!inputVal) return;
+
+    // Normalize input (e.g. M2379 -> smm2379)
+    let normalizedId = inputVal.toLowerCase();
+    if (normalizedId.startsWith("m") && normalizedId.length > 2) {
+      normalizedId = "smm" + normalizedId.substring(1);
+    }
+
+    const existing = assets.find(a => a.id === normalizedId || a.serialNumber === normalizedId || a.id === inputVal);
+    if (existing) {
+      openDetailsModal(existing.id);
+      document.getElementById("asset-search-input").value = ""; // Clean input on success
+    } else {
+      showToast(t("notif_not_found"), "error");
+    }
+  });
+  
+  // Theme Toggle Logic
+  on("theme-toggle-btn", "click", () => {
+    const themeBtn = document.getElementById("theme-toggle-btn");
+    if (document.body.getAttribute("data-theme") === "dark") {
+      document.body.removeAttribute("data-theme");
+      safeStorage.set("localStorage", "assetGuard_theme", "light");
+      themeBtn.innerHTML = '<i class="fa-solid fa-moon"></i>';
+    } else {
+      document.body.setAttribute("data-theme", "dark");
+      safeStorage.set("localStorage", "assetGuard_theme", "dark");
+      themeBtn.innerHTML = '<i class="fa-solid fa-sun"></i>';
+    }
+  });
+
+  // Global History Filters
+  on("global-history-category-filter", "change", renderGlobalHistory);
+  on("global-history-year-filter", "change", renderGlobalHistory);
+  on("global-history-search", "input", renderGlobalHistory);
+
+  // Submit edits form
+  on("edit-asset-form", "submit", (e) => {
+    e.preventDefault();
+    const assetId = document.getElementById("edit-asset-id").value;
+    const newStatus = document.getElementById("edit-status").value;
+    const newOwner = document.getElementById("edit-owner").value.trim();
+    const newLocation = document.getElementById("edit-location").value.trim();
+    
+    // Clear errors
+    document.getElementById("error-edit-owner").classList.remove("active");
+    document.getElementById("error-edit-issue").classList.remove("active");
+
+    const asset = assets.find(a => a.id === assetId);
+    if (!asset) return;
+
+    // Apply strict validation rules
+    if (newStatus === "Owned" && !newOwner) {
+      document.getElementById("error-edit-owner").classList.add("active");
+      showToast("Owner name is required", "error");
+      return;
+    }
+
+    let finalCondition = "";
+    if (newStatus === "Not Working") {
+      const issue = document.getElementById("edit-condition-notworking").value.trim();
+      if (!issue) {
+        document.getElementById("error-edit-issue").classList.add("active");
+        showToast("Issue report is required", "error");
+        return;
+      }
+      finalCondition = issue;
+    } else {
+      finalCondition = document.getElementById("edit-condition-normal").value.trim() || "Healthy";
+    }
+
+    const timestamp = new Date().toISOString();
+
+    // Check handover types
+    if (asset.status === "Open" && newStatus === "Owned") {
+      // Checkout
+      asset.history.push({
+        timestamp,
+        typeKey: "history_type_checkout",
+        descKey: "history_checked_out",
+        params: { owner: newOwner, condition: finalCondition }
+      });
+    } else if (asset.status === "Owned" && (newStatus === "Open" || newStatus === "Not Working")) {
+      // Check-in
+      asset.history.push({
+        timestamp,
+        typeKey: "history_type_checkin",
+        descKey: "history_checked_in",
+        params: { owner: asset.owner, condition: finalCondition }
+      });
+    } else if (asset.status === "Owned" && newStatus === "Owned" && asset.owner !== newOwner) {
+      // Transfer
+      asset.history.push({
+        timestamp,
+        typeKey: "history_type_transfer",
+        descKey: "history_transferred",
+        params: { oldOwner: asset.owner, newOwner: newOwner, condition: finalCondition }
+      });
+    } else if (asset.status !== newStatus) {
+      // Generic status change
+      asset.history.push({
+        timestamp,
+        typeKey: "history_type_status",
+        descKey: "history_status_change",
+        params: { status: `status_${newStatus.toLowerCase().replace(" ", "_")}` }
+      });
+    }
+
+    // Apply updates to state
+    asset.status = newStatus;
+    asset.owner = newStatus === "Open" ? "" : newOwner;
+    asset.location = newLocation || asset.location;
+    asset.condition = finalCondition;
+    
+    saveState();
+    updateMetrics();
+    renderAssetList();
+    
+    // Push updates to Atlassian Jira in the background
+    pushUpdateToAtlassian(asset);
+    
+    closeModal("details-modal");
+    showToast(t("notif_saved"), "success");
+  });
+
+  // Defensive helper to attach listeners
+  function on(id, event, callback) {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener(event, callback);
+  }
+
+  // Defensive helper for selectors
+  function onSelector(selector, event, callback) {
+    const el = document.querySelector(selector);
+    if (el) el.addEventListener(event, callback);
+  }
+
+  // Submit add new asset form
+  on("add-asset-form", "submit", (e) => {
+    e.preventDefault();
+    const addId = document.getElementById("add-id").value.trim().toUpperCase();
+    const addName = document.getElementById("add-name").value.trim();
+    const addCategory = document.getElementById("add-category").value;
+    const addSerial = document.getElementById("add-serial").value.trim();
+    const addLocation = document.getElementById("add-location").value.trim();
+    const addCondition = document.getElementById("add-condition").value.trim();
+    const addAcqDate = document.getElementById("add-acquisition-date").value;
+    
+    const specCpu = document.getElementById("add-spec-cpu").value.trim();
+    const specRam = document.getElementById("add-spec-ram").value.trim();
+    const specStorage = document.getElementById("add-spec-storage").value.trim();
+    const specOs = document.getElementById("add-spec-os").value.trim();
+
+    // Check duplicate
+    document.getElementById("error-add-id-exists").classList.remove("active");
+    if (assets.some(a => a.id === addId)) {
+      document.getElementById("error-add-id-exists").classList.add("active");
+      showToast("ID already exists", "error");
+      return;
+    }
+    
+    // Future Date validation
+    if (addAcqDate && new Date(addAcqDate) > new Date()) {
+      showToast("Acquisition date cannot be in the future", "error");
+      return;
+    }
+
+    // Assemble Specs object (consistent with seeds)
+    const specs = {};
+    if (specCpu) specs.cpu = specCpu;
+    if (specRam) specs.ram = specRam;
+    if (specStorage) specs.storage = specStorage;
+    if (specOs) specs.os = specOs;
+
+    // Assemble New Asset
+    const newAsset = {
+      id: addId,
+      name: addName,
+      category: addCategory,
+      serialNumber: addSerial,
+      status: "Open",
+      owner: "",
+      location: addLocation,
+      condition: addCondition,
+      acquisitionDate: addAcqDate,
+      specs: specs,
+      history: [
+        {
+          timestamp: new Date().toISOString(),
+          typeKey: "history_type_created",
+          descKey: "history_added",
+          params: {}
+        }
+      ]
+    };
+
+    // Save and Render
+    assets.push(newAsset);
+    saveState();
+    updateMetrics();
+    renderAssetList();
+    
+    // Push new asset to Atlassian Jira in the background
+    pushNewAssetToAtlassian(newAsset);
+    
+    // Reset Form & Close Modal
+    document.getElementById("add-asset-form").reset();
+    closeModal("add-asset-modal");
+    showToast(t("notif_saved"), "success");
+  });
+
+  // Manual Scan Entry Logic
+  on("manual-scan-btn", "click", () => {
+    const manualInput = document.getElementById("manual-scan-input").value.trim();
+    if (!manualInput) return;
+    
+    // Parse the input (supports raw ID, query params, or JSON strings)
+    const parsed = parseScannedContent(manualInput);
+    if (!parsed) return;
+    
+    // Normalize parsed ID for searching
+    let normalizedId = (parsed.id || "").toLowerCase();
+    if (normalizedId.startsWith("m") && normalizedId.length > 2) {
+      normalizedId = "smm" + normalizedId.substring(1);
+    }
+    
+    const existing = assets.find(a => {
+      const assetIdLower = (a.id || "").toLowerCase();
+      const assetSerialLower = (a.serialNumber || "").toLowerCase();
+      return assetIdLower === normalizedId || 
+             (parsed.serial && assetSerialLower === parsed.serial.toLowerCase()) ||
+             (parsed.id && assetIdLower === parsed.id.toLowerCase());
+    });
+    
+    // Close scanner first
+    stopCameraScanner();
+    closeModal("scanner-modal");
+    document.getElementById("manual-scan-input").value = "";
+
+    if (existing) {
+      // If the laptop exists, open the details modal with the 'edit' (Actions) tab selected!
+      showToast(t("notif_scan_success", { id: existing.id }), "success");
+      openDetailsModal(existing.id, "edit");
+    } else {
+      // Open the Add screen for a new asset and automatically fill out all parsed fields
+      showToast(t("notif_new_asset_scanned"), "info");
+      openModal("add-asset-modal");
+      prefillAddAssetForm(parsed);
+    }
+  });
+}
+
+// Start Camera Stream QR scan
+function startCameraScanner() {
+  if (isScannerStarting) return;
+  isScannerStarting = true;
+  shouldStopScanner = false;
+  
+  document.getElementById("scanner-output-status").textContent = "...";
+  
+  if (html5QrScanner) {
+    try {
+      const clearResult = html5QrScanner.clear();
+      if (clearResult && typeof clearResult.catch === 'function') {
+        clearResult.catch(e => console.log("Clear error", e));
+      }
+    } catch (e) {
+      console.log("Clear error", e);
+    }
+  }
+
+  html5QrScanner = new Html5Qrcode("qr-reader");
+  const config = { fps: 15, qrbox: { width: 300, height: 300 } };
+
+  html5QrScanner.start(
+    { facingMode: "environment" }, 
+    config,
+    (decodedText) => {
+      playBeep();
+      stopCameraScanner();
+      closeModal("scanner-modal");
+
+      // Parse the decoded QR content (supports JSON, query params, or raw ID)
+      const parsed = parseScannedContent(decodedText);
+      if (!parsed) return;
+
+      // Normalize scanned text ID (e.g. M2379 -> smm2379)
+      let normalizedId = (parsed.id || "").toLowerCase();
+      if (normalizedId.startsWith("m") && normalizedId.length > 2) {
+        normalizedId = "smm" + normalizedId.substring(1);
+      }
+
+      const existing = assets.find(a => {
+        const assetIdLower = (a.id || "").toLowerCase();
+        const assetSerialLower = (a.serialNumber || "").toLowerCase();
+        return assetIdLower === normalizedId || 
+               (parsed.serial && assetSerialLower === parsed.serial.toLowerCase()) ||
+               (parsed.id && assetIdLower === parsed.id.toLowerCase());
+      });
+      
+      if (existing) {
+        // Existing asset: open directly to the 'edit' actions tab
+        showToast(t("notif_scan_success", { id: existing.id }), "success");
+        openDetailsModal(existing.id, "edit");
+      } else {
+        // New asset found! Open the Add Asset Modal and pre-fill all available details
+        showToast(t("notif_new_asset_scanned"), "info");
+        openModal("add-asset-modal");
+        prefillAddAssetForm(parsed);
+      }
+    },
+    (errorMessage) => {
+    }
+  ).then(() => {
+    isScannerStarting = false;
+    if (shouldStopScanner) {
+      stopCameraScanner();
+    } else {
+      document.getElementById("scanner-output-status").textContent = "";
+    }
+  }).catch(err => {
+    isScannerStarting = false;
+    console.error("Camera startup failure", err);
+    document.getElementById("scanner-output-status").textContent = "Camera error: Camera not found or permission denied.";
+    setTimeout(() => {
+      closeModal("scanner-modal");
+      isScannerStarting = false; // Reset flag so they can try again
+    }, 3000); 
+  });
+}
+
+
+// Stop Camera Stream
+function stopCameraScanner() {
+  if (isScannerStarting) {
+    shouldStopScanner = true;
+    return;
+  }
+  
+  if (html5QrScanner) {
+    try {
+      html5QrScanner.stop().then(() => {
+        if (html5QrScanner) {
+          try {
+            const clearResult = html5QrScanner.clear();
+            if (clearResult && typeof clearResult.catch === 'function') {
+              clearResult.catch(e => console.log("Clear error", e));
+            }
+          } catch (e) {
+            console.log("Clear error", e);
+          }
+        }
+      }).catch(err => console.error("Scanner stop fail", err));
+    } catch (e) {
+      console.log("Scanner already stopped or clear failed", e);
+    }
+  }
+}
+
+// General Modal open/close helpers
+function openModal(modalId) {
+  const modal = document.getElementById(modalId);
+  if (modal) {
+    modal.classList.add("active");
+    if (modalId === "settings-modal") {
+      const cloudIdInput = document.getElementById("api-cloud-id");
+      cloudIdInput.value = apiConfig.cloudId || "";
+      document.getElementById("api-workspace-id").value = apiConfig.workspaceId || "";
+      document.getElementById("api-email").value = apiConfig.email || "";
+      document.getElementById("api-token").value = apiConfig.token || "";
+      document.getElementById("api-sync-limit").value = apiConfig.syncLimit || "100";
+
+      // Populate Offline Mode toggle
+      const offlineToggle = document.getElementById("offline-mode-toggle");
+      if (offlineToggle) {
+        offlineToggle.checked = isOfflineMode;
+        offlineToggle.onchange = (e) => {
+          isOfflineMode = e.target.checked;
+          saveState();
+          toggleOfflineUI(isOfflineMode);
+        };
+      }
+
+
+
+      // Function to dynamically update the help links
+      const updateHelpLinks = () => {
+        let subdomain = cloudIdInput.value.trim() || "smm-sandbox";
+        if (subdomain.includes("-")) {
+          subdomain = "smm-sandbox"; // Fallback to their known subdomain if they entered a resolved UUID
+        }
+        
+        const workspaceLink = document.getElementById("find-workspace-id-link");
+        if (workspaceLink) {
+          workspaceLink.href = `https://${subdomain}.atlassian.net/rest/servicedeskapi/assets/workspace`;
+        }
+
+        const cloudLink = document.getElementById("find-cloud-id-link");
+        if (cloudLink) {
+          cloudLink.href = `https://${subdomain}.atlassian.net/_edge/tenant_info`;
+        }
+      };
+      
+      // Initialize on modal open and watch for typing changes
+      updateHelpLinks();
+      cloudIdInput.oninput = updateHelpLinks;
+      
+      // Render/Fades elements as per current offline mode state
+      toggleOfflineUI(isOfflineMode);
+    }
+  }
+}
+function closeModal(modalId) {
+  document.getElementById(modalId).classList.remove("active");
+}
+
+// Theme Toggle & Connection Features Initial State Loader
+document.addEventListener("DOMContentLoaded", () => {
+  const themeBtn = document.getElementById("theme-toggle-btn");
+  if (themeBtn) {
+    const currentTheme = safeStorage.get("localStorage", "assetGuard_theme") || "light";
+    if (currentTheme === "dark") {
+      document.body.setAttribute("data-theme", "dark");
+      themeBtn.innerHTML = '<i class="fa-solid fa-sun"></i>';
+    } else {
+      document.body.removeAttribute("data-theme");
+      themeBtn.innerHTML = '<i class="fa-solid fa-moon"></i>';
+    }
+  }
+
+  // Bind Telemetry diagnostics tracer trigger
+  const runDiagnosticsBtn = document.getElementById("run-diagnostics-btn");
+  if (runDiagnosticsBtn) {
+    runDiagnosticsBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      runConnectionTelemetry();
+    });
+  }
+
+});
+
+// Run connection diagnostic telemetry tracing
+async function runConnectionTelemetry() {
+  const panel = document.getElementById("diagnostics-panel");
+  const output = document.getElementById("diagnostics-trace-output");
+  const timeSpan = document.getElementById("diagnostics-time");
+  
+  if (!panel || !output) return;
+  
+  // Toggle active class on panel
+  panel.classList.toggle("active");
+  if (!panel.classList.contains("active")) return;
+  
+  timeSpan.textContent = new Date().toLocaleTimeString();
+  output.innerHTML = "";
+  
+  const addLine = (type, text) => {
+    const iconMap = {
+      info: "fa-info-circle",
+      success: "fa-circle-check",
+      warning: "fa-triangle-exclamation",
+      error: "fa-circle-xmark",
+      spin: "fa-spinner fa-spin"
+    };
+    const line = document.createElement("div");
+    line.className = `trace-line ${type}`;
+    line.innerHTML = `<i class="fa-solid ${iconMap[type] || 'fa-terminal'}"></i> ${text}`;
+    output.appendChild(line);
+    output.scrollTop = output.scrollHeight;
+  };
+  
+  addLine("info", "Starting Telemetry Connection diagnostics trace...");
+  
+  if (isOfflineMode) {
+    addLine("warning", "Diagnostics halted: Active Offline Mode is currently enabled. Bypass connection checks.");
+    return;
+  }
+  
+  const email = (document.getElementById("api-email")?.value || "").trim() || apiConfig.email;
+  const token = (document.getElementById("api-token")?.value || "").trim() || apiConfig.token;
+  const cloudId = (document.getElementById("api-cloud-id")?.value || "").trim() || apiConfig.cloudId;
+  const workspaceId = (document.getElementById("api-workspace-id")?.value || "").trim() || apiConfig.workspaceId;
+  
+  // Check Step 1: Config Fields check
+  addLine("info", "Verifying Atlassian configurations parameters...");
+  await new Promise(r => setTimeout(r, 400));
+  
+  if (!email || !token || !cloudId || !workspaceId) {
+    addLine("error", "Failed: Missing critical Atlassian settings. Please fill out Cloud ID, Workspace ID, Email, and API Token fields.");
+    return;
+  }
+  addLine("success", "Required Atlassian fields are populated.");
+  
+  // Check Step 2: UUID Format verification
+  const isCloudUuid = cloudId.includes("-") && isValidUUID(cloudId);
+  const isSubdomain = !cloudId.includes("-");
+  
+  if (!isCloudUuid && !isSubdomain) {
+    addLine("warning", `Cloud ID format '${cloudId}' looks abnormal. UUID or simple subdomain expected.`);
+  } else if (isCloudUuid) {
+    addLine("success", `Cloud ID format is verified as a valid UUID.`);
+  } else {
+    addLine("info", `Cloud ID is a raw subdomain '${cloudId}'. Running auto-resolver to fetch UUID...`);
+  }
+  
+  // Check Step 3: Direct Ping DNS / CORS Check
+  const pingUrl = isSubdomain 
+    ? `https://${cloudId}.atlassian.net/_edge/tenant_info`
+    : `https://api.atlassian.com/ex/jira/${cloudId}/rest/servicedeskapi/assets/workspace`;
+    
+  addLine("spin", `Attempting direct secure CORS fetch to Atlassian Gateway at ${isSubdomain ? `${cloudId}.atlassian.net` : 'api.atlassian.com'}...`);
+  await new Promise(r => setTimeout(r, 600));
+  
+  const auth = btoa(`${email}:${token}`);
+  const headers = {
+    "Authorization": `Basic ${auth}`,
+    "Accept": "application/json"
+  };
+  
+  let directSuccess = false;
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 4000);
+    const res = await fetch(pingUrl, { headers, signal: controller.signal });
+    clearTimeout(timeout);
+    
+    if (res.ok) {
+      addLine("success", "Direct gateway ping succeeded! Your browser can connect directly to Atlassian with no CORS restrictions.");
+      directSuccess = true;
+    } else {
+      addLine("warning", `Direct connection returned status ${res.status}: ${res.statusText}. Authentic credentials required.`);
+    }
+  } catch (err) {
+    addLine("error", `Direct connection BLOCKED by browser security: ${err.message}. (CORS restriction standard on localhost/static)`);
+  }
+  
+  if (!directSuccess) {
+    // Check Step 4: Fallback Proxy diagnostics via allorigins
+    const proxyPrefix = "https://api.allorigins.win/get?url=";
+    addLine("info", "Smart CORS Auto-Proxy diagnostics: Testing backup route via public resolver allorigins.win...");
+    await new Promise(r => setTimeout(r, 500));
+    
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 5000);
+      const fullProxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(pingUrl)}`;
+      const res = await fetch(fullProxyUrl, { signal: controller.signal });
+      clearTimeout(timeout);
+      
+      if (res && res.ok) {
+        const data = await res.json();
+        if (data && data.contents) {
+          addLine("success", "Public Proxy Fallback test SUCCEEDED! Cross-origin requests can bypass CORS via proxy.");
+        } else {
+          addLine("error", "Public Proxy returned empty contents block.");
+        }
+      } else {
+        addLine("error", "Public Proxy gateway returned status code error.");
+      }
+    } catch (proxyErr) {
+      addLine("error", `Public Proxy routing check failed: ${proxyErr.message}`);
+    }
+  }
+  
+  addLine("success", "Tracer diagnostics complete. Connection telemetry successfully analyzed.");
+}
+
+  </script>
+
+</body>
+</html>
